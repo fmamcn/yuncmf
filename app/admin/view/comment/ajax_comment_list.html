@@ -1,0 +1,37 @@
+{foreach name="comments" item="v"}
+	<tr>
+		<td class="center">
+			<label class="pos-rel">
+				<input name='c_id[]' id="navid" class="ace"  type='checkbox' value='{$v.c_id}'>
+				<span class="lbl"></span>
+			</label>
+		</td>
+		<td class="center">{$v.c_id}</td>
+		<td class="center">{$v.t_name}</td>
+		<td class="center" height="28">{$v.member_username|default=$v['member_nickname']}</td>
+		<td class="center">{$v.c_content}</td>
+		<td class="center">
+			{if condition="$v['c_status'] eq 1"}
+				<a class="red state-btn" href="{:url('admin/Comment/comment_state')}" data-id="{$v.c_id}" title="已审">
+					<div id="zt{$v.c_id}"><button class="btn btn-minier btn-yellow">已审</button></div>
+				</a>
+			{else/}
+				<a class="red state-btn" href="{:url('admin/Comment/comment_state')}" data-id="{$v.c_id}" title="未审">
+					<div id="zt{$v.c_id}"><button class="btn btn-minier btn-danger">未审</button></div>
+				</a>
+			{/if}
+		</td>
+		<td class="center">{$v.createtime|date='Y-m-d H:i:s',###}</td>
+		<td class="center">
+			<div class="action-buttons">
+				<a class="red confirm-rst-url-btn" data-info="你确定要删除吗？包括其下子评论" href="{:url('admin/Comment/comment_del',array('c_id'=>$v['c_id'],'p'=>input('p',1)))}" title="删除">
+					<i class="ace-icon fa fa-trash-o bigger-130"></i>
+				</a>
+			</div>
+		</td>
+	</tr>
+{/foreach}
+<tr>
+	<td align="center"><button id="btnsubmit" class="btn btn-white btn-yellow btn-sm">删除</button></td>
+	<td colspan="8" align="right">{$page}</td>
+</tr>

@@ -1,0 +1,205 @@
+<!DOCTYPE html >
+<html>
+<head>
+    <meta name="Generator" content="{$site_seo_title}" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>{$site_seo_title} {$site_name}</title>
+    <meta http-equiv="keywords" content="{$site_seo_keywords}" />
+    <meta name="description" content="{$site_seo_description}" />
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <link rel="stylesheet" type="text/css" href="{$theme_path}public/css/index.css"/>
+    <link rel="stylesheet" type="text/css" href="{$theme_path}public/css/public.css"/>
+    <link rel="stylesheet" type="text/css" href="{$theme_path}public/css/user.css"/>
+    <link rel="stylesheet" type="text/css" href="{$theme_path}public/css/layer.css"/>
+    <link rel="stylesheet" href="{$theme_path}public/css/fonts/font-awesome/css/font-awesome.min.css"/>
+ 
+    <link rel="stylesheet" type="text/css" href="{$theme_path}public/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/shearphoto/css/ShearPhoto_f_zh-cn.css"/>
+    <script src="{$theme_path}public/js/jquery.min.js"></script>
+    <script src="{$theme_path}public/js/bootstrap.js"></script>
+
+    <script type="text/javascript" src="{$theme_path}public/js/jquery.js"></script>
+    {include file="public:config"/}
+</head>
+<body>
+    <div id="center" class="user_com" style="margin-top: 5px;">
+        <div class="com_top">
+            <h2 style="margin-top: 0px;">
+                <a href="{:url('home/Center/edit')}">设置</a>
+                <a href="{:url('home/Login/logout')}" style="float: right;width: 50px;background-color:rgba(96,96,96,0);border-radius:1px;text-align: right;"><i class="fa fa-sign-out"></i>退出</a>
+            </h2>
+            <p class="tuij_cas">{$member_nickname|default=$member_username}</p>
+            <dl>
+                <dt>
+                    <a href="#">
+                        <span class="profile-picture">
+                            <img src="{$member_headpic|get_imgurl=1}" class="headicon" data-toggle="modal" data-target="#myModal" />
+                        </span>
+                    </a>
+                </dt>
+                <dd>{$membergroudname}</dd>
+            </dl>
+        </div>
+        <div class="uer_topnav">
+            <ul>
+                <li class="bain">
+                    <a href="{:url('home/Center/fav')}">
+                        <span>{$fav_count}</span>
+                        我的订阅
+                    </a>
+                </li>
+                <li class="bain">
+                    <a href="{:url('home/Center/fav')}">
+                        <span>{$fav_count}</span>
+                        {:lang('my favorites')}
+                    </a>
+                </li>
+                <li>
+                    <a href="{:url('home/Comment/index')}">
+                        <span>{$com_count}</span>
+                        {:lang('my comments')}
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="Wallet">
+            <ul>
+                <li class="bain1">
+                    <strong>{$money}</strong>
+                    <span>余额</span>
+                </li>
+                <li class="bain1">
+                    <strong>{$coin}</strong>
+                    <span>学习币</span>
+                </li>
+                <li>
+                    <strong>{$score}</strong>
+                    <span>积分</span>
+                </li>
+            </ul>
+            <a href="#">
+                <em class="Icon Child"></em>
+                <dl>
+                    <dt>我的孩子</dt>
+                </dl>
+            </a>
+        </div>
+        <!-- 孩子页 -->
+        <div class="entry-list clearfix">
+            <nav>
+                <ul>
+                {foreach name="students" item="v" key="k"}
+                    <li>
+                        <a href="{:url('home/Student/index',array('id'=>$v.student_id))}" style="width: 33.33%;">
+                            <img src="{$v.student_headpic|get_imgurl}" style="width:80%;height: 120px;" />
+                            <span>{$v.student_username}</span>
+                        </a>
+                    </li>        
+                {/foreach}
+                    <li>
+                        <a href="{:url('home/Student/add')}" style="width: 33.33%;">
+                            <img alt="添加孩子信息" src="{$theme_path}public/images/add.png" style="width:80%;height: 120px;" />
+                            <span>添加孩子信息</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <!-- 头像处理 -->
+
+    <script  type="text/javascript" src="__PUBLIC__/shearphoto/js/ShearPhoto.js" ></script>
+    <script  type="text/javascript"  src="__PUBLIC__/shearphoto/js/alloyimage.js" ></script>
+    <script  type="text/javascript"  src="__PUBLIC__/shearphoto/js/handle_f.js" ></script>
+    <script type="text/javascript">
+        var SHEAR = {
+            PATH_RES: '__PUBLIC__',
+            PATH_AVATAR: '__ROOT__/data/upload/avatar',
+            URL:"{:url('home/Center/avatar')}",
+        };
+    </script>
+    <!-- 显示模态框（Modal） -->
+    <div class="modal fade modal-avatar" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">
+                        {:lang('member avatar')}
+                    </h4>
+                </div>
+                <div class="modal-body" style="padding: 10px;">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div id="shearphoto_loading">{:lang('program loading')}......</div>
+                            <div id="shearphoto_main">
+                                <div class="primary">
+                                    <div id="main">
+                                        <div class="point"></div>
+                                        <div id="SelectBox">
+                                            <form    id="ShearPhotoForm" enctype="multipart/form-data" method="post"  target="POSTiframe">
+                                                <a href="javascript:;" id="selectImage"><input type="file"  name="UpFile" autocomplete="off"/></a>
+                                            </form>
+                                            <a href="javascript:;" id="PhotoLoading"></a>
+                                        </div>
+                                        <div id="relat">
+                                            <div id="black"></div>
+                                            <div id="movebox">
+                                                <div id="smallbox">
+                                                    <img src="__PUBLIC__/shearphoto/images/default.gif" class="MoveImg"  style="max-width:300%"/>
+                                                </div>
+                                                <i id="borderTop"></i>
+                                                <i id="borderLeft"></i>
+                                                <i id="borderRight"></i>
+                                                <i id="borderBottom"></i>
+                                                <i id="BottomRight"></i>
+                                                <i id="TopRight"></i>
+                                                <i id="Bottomleft"></i>
+                                                <i id="Topleft"></i>
+                                                <i id="Topmiddle"></i>
+                                                <i id="leftmiddle"></i>
+                                                <i id="Rightmiddle"></i>
+                                                <i id="Bottommiddle"></i>
+                                            </div>
+                                            <img src="__PUBLIC__/shearphoto/images/default.gif" class="BigImg" />
+                                        </div>
+                                    </div>
+                                    <div style="clear: both"></div>
+                                    <div id="Shearbar">
+                                        <a id="LeftRotate" href="javascript:;"><em></em>{:lang('turn L')}</a>
+                                        <em class="hint L"></em>
+                                        <div class="ZoomDist" id="ZoomDist">
+                                            <div id="Zoomcentre"></div>
+                                            <div id="ZoomBar"></div>
+                                            <span class="progress"></span>
+                                        </div>
+                                        <em class="hint R"></em>
+                                        <a id="RightRotate" href="javascript:;">{:lang('turn R')}<em></em></a>
+                                        <p class="Psava">
+                                            <a id="againIMG"  href="javascript:;">{:lang('reselection')}</a>
+                                            <a id="saveShear" href="javascript:;">{:lang('save capture')}</a>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div style="clear: both"></div>
+                            </div>
+                            <div id="photoalbum">
+                                <i id="close"></i>
+                                <ul>
+                                    <li><img src="__PUBLIC__/shearphoto/file/photo/1.jpg" serveUrl="file/photo/1.jpg" /></li>
+                                    <li><img src="__PUBLIC__/shearphoto/file/photo/2.jpg" serveUrl="file/photo/2.jpg" /></li>
+                                    <li><img src="__PUBLIC__/shearphoto/file/photo/3.jpg" serveUrl="file/photo/3.jpg" /></li>
+                                    <li><img src="__PUBLIC__/shearphoto/file/photo/4.jpg" serveUrl="file/photo/4.jpg" /></li>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <div style="margin-bottom: 45px;" class="clearfix"></div>
+    {include file="public:footer_nav"/}
+</body>
+</html>

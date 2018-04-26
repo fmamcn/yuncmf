@@ -1,0 +1,115 @@
+<!DOCTYPE html >
+<html>
+<head>
+  <meta name="Generator" content="{$site_seo_title}" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width">
+  <title>{$site_seo_title} {$site_name}</title>
+  <meta http-equiv="keywords" content="{$site_seo_keywords}" />
+  <meta name="description" content="{$site_seo_description}" />
+  <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+  <link rel="stylesheet" type="text/css" href="{$theme_path}public/css/public.css"/>
+  <link rel="stylesheet" type="text/css" href="{$theme_path}public/css/index.css"/>
+  <script type="text/javascript" src="{$theme_path}public/js/jquery.js"></script>
+  <script type="text/javascript" src="{$theme_path}public/js/TouchSlide.1.1.js"></script>
+  <!-- IE8及以下支持JSON -->
+  <!--[if lt IE 9]>
+      <script src="https://g.alicdn.com/aliww/ww/json/json.js" charset="utf-8"></script>
+  <![endif]-->
+  <!-- WSDK-->
+  {include file="public:config"/}
+  {php}cookie('think_var', 'zh-cn'){/php}
+</head>
+<body style="width: 100%;">
+<div id="page" class="showpage" style="margin-top: 5px;">
+<div>
+<!-- banner广告幻灯Start -->
+<div id="scrollimg" class="scrollimg">
+  <div class="bd">
+    {yf:ads name="home_slides" cid="$home_adtype_id" /} 
+    <ul>
+      {foreach name="home_slides" item="vo"}
+	    	<li style="width: 100%;">
+          <a href="{$vo.plug_ad_url}" >
+            <img src="{$vo.plug_ad_pic|get_imgurl}" title="{$vo.plug_ad_name}" height="160px" width="100%"/>
+          </a>
+        </li>
+      {/foreach}
+    </ul>
+  </div>
+  <div class="hd">
+	<ul></ul>
+  </div>
+</div>
+<script type="text/javascript">
+	TouchSlide({ 
+		slideCell:"#scrollimg",
+		titCell:".hd ul", //开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
+		mainCell:".bd ul", 
+		effect:"leftLoop", 
+		autoPage:true,//自动分页
+		autoPlay:true //自动播放
+	});
+</script> 
+<!-- banner广告幻灯End -->
+<div class="entry-list clearfix">
+	<nav>
+		<ul>
+			<li>
+				<a href="/home/Notice">
+					<img alt="通知" src="{$theme_path}public/images/notice.png" />
+					<span>通知</span>
+				</a>
+			</li>		 
+			<li>
+				<a href="/home/Task">
+					<img alt="作业" src="{$theme_path}public/images/task.png" />
+					<span>作业</span>
+				</a>
+			</li>
+			<li>
+				<a href="/home/Group">
+					<img alt="班级圈" src="{$theme_path}public/images/grade.png" />
+					<span>班级圈</span>
+				</a>
+			</li>
+			<li>
+				<a href="/home/Dynamic">
+					<img alt="在校表现" src="{$theme_path}public/images/expression_school.png" />
+					<span>在校表现</span>
+				</a>
+			</li>
+		</ul>
+	</nav>
+</div>
+
+<section class="index_floor">
+  <div class="floor_body1" >
+    <h2>
+      <em></em>
+      新闻资讯
+    </h2>
+    <div id="scroll_new" class="scroll_hot">
+      <div class="bd">
+        <ul>
+        {yf:news name="lastnews" cid="$portal_index_lastnews" field="news_title,news_hits,news_scontent,n_id,news_img,news_columnid,news_time" order="news_time asc" limit="6" /} 
+          {foreach name="lastnews" item="vo" key="k"}
+          <li>
+            <a href="{:url('home/News/index',array('id'=>$vo['n_id']))}" title="{$vo.news_title}">
+             <div class="index_pro"> 
+                <div class="products_kuang">
+                  <img src="{$vo['news_img']|get_imgurl}" style="height: 120px;"></div>
+                <div class="goods_name">{:msubstr($vo['news_title'],0,18)}</div>
+              </div>
+            </a>
+           </li>
+           {/foreach}
+           </ul>
+        </div>
+      </div>
+    </div>
+    <div style="margin-bottom: 50px;" class="clearfix"></div>
+</section>
+{include file="public:footer_nav"/}
+</body>
+</html>

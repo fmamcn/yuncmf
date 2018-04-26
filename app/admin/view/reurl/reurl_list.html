@@ -1,0 +1,257 @@
+{extend name="admin@public/base" /}
+{block name="main-content"}
+	<!--系统参数设置-跳转系统页-->
+	<div id="sidebar2" class="sidebar h-sidebar navbar-collapse collapse breadcrumbs-fixed" data-sidebar="true" data-sidebar-scroll="true" data-sidebar-hover="true">
+		<!--当前操作-->
+		<div class="nav-wrap-up pos-rel">
+			<div class="nav-wrap">
+				<ul class="nav nav-list">
+					{foreach name="menus_child" item="k"}
+					<li>
+						<a href="{:url(''.$k['name'].'')}">
+						<o class="font12 {if condition="$id_curr eq $k['id']"}rigbg{/if}">{$k.title}</o>
+						</a>
+						<b class="arrow"></b>
+					</li>
+					{/foreach}
+				</ul>
+			</div>
+		</div><!-- /.nav-list -->
+	</div>
+	<div class="page-content">
+		<!--操作提示-->
+		<a class="btn btn-link pull-right" onclick="showtips();" style="z-index: 999;display: none;" id="lightbulb">
+			<i class="ace-icon fa fa-lightbulb-o"></i>
+		</a>
+		<div class="alert alert-info alert-fixed" id="tips">
+			<button class="close" onclick="hidetips();">
+				<i class="ace-icon fa fa-times"></i>
+			</button>
+			<div class="title">
+				<i class="fa fa-lightbulb-o"></i>
+				<h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+			</div>
+			<ul>
+				<li>当访问"验证网址"通过后，跳转到"跳转网址"!</li>
+				<li>可以做跳转服务器、防封系统!</li>
+			</ul>
+		</div>
+		<script type="text/javascript">
+			function showtips(){
+				$("#tips").show();
+				$("#lightbulb").hide();
+			}
+			function hidetips(){
+				$("#tips").hide();
+				$("#lightbulb").show();
+			}
+			setTimeout(function(){$("#tips").hide();$("#lightbulb").show();}, 10000);
+		</script>
+		<!--主体-->
+		<div class="row maintop">
+			<div class="col-xs-4 col-sm-2 margintop5">
+				<!-- 点击模态框（Modal） -->
+				<button class="btn btn-sm btn-danger" data-toggle="modal" data-target="#myModal">
+					<i class="ace-icon fa fa-plus bigger-110"></i>
+					添加跳转
+				</button>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12">
+				<div>
+					<table class="table table-striped table-bordered table-hover" id="dynamic-table">
+						<thead>
+						<tr>
+							<th class="hidden-xs center">ID</th>
+							<th class="hidden-xs center">优先顺序</th>
+							<th class="center">网址名称</th>
+							<th class="hidden-xs center">验证网址</th>
+							<th class="hidden-xs center">等待时间(秒)</th>
+							<th class="hidden-xs center">跳转网址</th>
+							<th class="hidden-xs center">添加时间</th>
+							<th class="hidden-xs center" style="border-right:#CCC solid 1px;">状态</th>
+							<th style="border-right:#CCC solid 1px;" class="center">操作</th>
+						</tr>
+						</thead>
+						<tbody id="ajax-data">
+							{include file="reurl/ajax_reurl_list"/}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div><!-- /.page-content -->
+	<!-- 显示添加模态框（Modal） -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<form class="form-horizontal ajaxForm2" name="reurl_add" method="post" action="{:url('admin/Reurl/reurl_runadd')}">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						<h4 class="modal-title" id="myModalLabel">
+							添加跳转规则
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-xs-12">
+
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 服务器名称： </label>
+									<div class="col-sm-10">
+										<input type="text" name="name" id="name" placeholder="输入服务器名称" class="col-xs-10 col-sm-5" required/>
+									</div>
+								</div>
+								<div class="space-4"></div>
+
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 验证URL： </label>
+									<div class="col-sm-10">
+										<input type="text" name="validate_url" id="validate_url" placeholder="输入验证URL" class="col-xs-10 col-sm-8" required/>
+									</div>
+									<label class="col-sm-2 control-label no-padding-right"></label>
+									<span class="lbl red center">&nbsp;&nbsp;*验证是否可用，返回值success为可用</span>
+								</div>
+								<div class="space-4"></div>
+
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 等待时间(秒)： </label>
+									<div class="col-sm-10">
+										<input type="number" value="0" name="wait_time" id="wait_time" min="0" max="100" class="col-xs-10 col-sm-5" />
+									</div>
+								</div>
+								<div class="space-4"></div>
+
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 跳转URL： </label>
+									<div class="col-sm-10">
+										<input type="text" name="goto_url" id="goto_url" placeholder="输入跳转URL：" class="col-xs-10 col-sm-8" required/>
+									</div>
+								</div>
+								<div class="space-4"></div>
+
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 排序： </label>
+									<div class="col-sm-10">
+										<input type="text" name="sort" id="sort" value="50" class="col-xs-10 col-sm-3" />
+										<span class="lbl">&nbsp;&nbsp;<span class="red">*</span>数值越小，优先级越高</span>
+									</div>
+								</div>
+								<div class="space-4"></div>
+
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 是否开启： </label>
+									<div class="col-sm-10" style="padding-top:5px;">
+										<input name="status" id="status" value="1" class="ace ace-switch ace-switch-4 btn-flat" type="checkbox" />
+										<span class="lbl">&nbsp;&nbsp;默认关闭</span>
+									</div>
+								</div>
+								<div class="space-4"></div>
+
+							</div>
+						</div>
+
+					</div>
+					<div class="modal-footer">
+						<button type="submit" class="btn btn-primary">
+							提交保存
+						</button>
+						<button class="btn btn-info" type="reset">
+							重置
+						</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">
+							关闭
+						</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</form>
+	</div><!-- /.modal -->
+
+	<!-- 显示修改模态框（Modal） -->
+	<div class="modal fade in" id="myModaledit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-backdrop fade in" id="gbbb" style="height: 100%;"></div>
+		<form class="form-horizontal ajaxForm2" name="reurl_runedit" method="post" action="{:url('admin/Reurl/reurl_runedit')}">
+			<input type="hidden" name="id" id="reurledit_id" value="" />
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" id="gb" data-dismiss="modal" aria-hidden="true">×</button>
+						<h4 class="modal-title" id="myModalLabel">
+							修改跳转规则
+						</h4>
+					</div>
+					<div class="modal-body">
+
+						<div class="row">
+							<div class="col-xs-12">
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 服务器名称： </label>
+									<div class="col-sm-10">
+										<input type="text" name="name" id="reurledit_name" value="" class="col-xs-10 col-sm-5" required/>
+									</div>
+								</div>
+								<div class="space-4"></div>
+
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 验证URL： </label>
+									<div class="col-sm-10">
+										<input type="url" name="validate_url" id="reurledit_validate_url" value="" class="col-xs-10 col-sm-8" required/>
+										<span class="lbl red">验证是否可用，返回值success为可用</span>
+									</div>
+								</div>
+								<div class="space-4"></div>
+
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 等待时间(秒)： </label>
+									<div class="col-sm-10">
+										<input type="number" name="wait_time" id="reurledit_wait_time" min="0" max="100" class="col-xs-10 col-sm-5" />
+									</div>
+								</div>
+								<div class="space-4"></div>
+
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 跳转URL： </label>
+									<div class="col-sm-10">
+										<input type="url" name="goto_url" id="reurledit_goto_url" placeholder="输入跳转URL：" class="col-xs-10 col-sm-8" required/>
+									</div>
+								</div>
+								<div class="space-4"></div>
+
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 排序： </label>
+									<div class="col-sm-10">
+										<input type="text" name="sort" id="reurledit_sort" value="" class="col-xs-10 col-sm-3" />
+										<span class="lbl">&nbsp;&nbsp;<span class="red">*</span>数值越小，优先级越高</span>
+									</div>
+								</div>
+								<div class="space-4"></div>
+
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 是否开启： </label>
+									<div class="col-sm-10" style="padding-top:5px;">
+										<input name="status" id="reurledit_status" value="" class="ace ace-switch ace-switch-4 btn-flat" type="checkbox" />
+										<span class="lbl">&nbsp;&nbsp;默认开启</span>
+									</div>
+								</div>
+								<div class="space-4"></div>
+
+							</div>
+						</div>
+
+					</div>
+					<div class="modal-footer">
+						<button type="submit" class="btn btn-primary">
+							提交保存
+						</button>
+						<button type="button" class="btn btn-default" id="gbb" >
+							关闭
+						</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</form>
+	</div><!-- /.modal -->
+{/block}
+

@@ -1,0 +1,239 @@
+{extend name="admin@public/base" /}
+{block name="main-content"}
+	<!--扩展管理-标签列表-->
+	<div id="sidebar2" class="sidebar h-sidebar navbar-collapse collapse breadcrumbs-fixed" data-sidebar="true" data-sidebar-scroll="true" data-sidebar-hover="true">
+		<!--当前操作-->
+		<div class="nav-wrap-up pos-rel">
+			<div class="nav-wrap">
+				<ul class="nav nav-list">
+					{foreach name="menus_child" item="k"}
+					<li>
+						<a href="{:url(''.$k['name'].'')}">
+						<o class="font12 {if condition="$id_curr eq $k['id']"}rigbg{/if}">{$k.title}</o>
+						</a>
+						<b class="arrow"></b>
+					</li>
+					{/foreach}
+				</ul>
+			</div>
+		</div><!-- /.nav-list -->
+	</div>
+	<div class="page-content">
+		<!--操作提示-->
+		<a class="btn btn-link pull-right" onclick="showtips();" style="z-index: 999;display: none;" id="lightbulb">
+			<i class="ace-icon fa fa-lightbulb-o"></i>
+		</a>
+		<div class="alert alert-info alert-fixed" id="tips">
+			<button class="close" onclick="hidetips();">
+				<i class="ace-icon fa fa-times"></i>
+			</button>
+			<div class="title">
+				<i class="fa fa-lightbulb-o"></i>
+				<h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+			</div>
+			<ul>
+				<li>增加、修改、删除标签，用于文章资讯显示、搜索!</li>
+			</ul>
+		</div>
+		<script type="text/javascript">
+			function showtips(){
+				$("#tips").show();
+				$("#lightbulb").hide();
+			}
+			function hidetips(){
+				$("#tips").hide();
+				$("#lightbulb").show();
+			}
+			setTimeout(function(){$("#tips").hide();$("#lightbulb").show();}, 10000);
+		</script>
+		<!--主体-->
+		<div class="row maintop">
+			<div class="col-xs-12 col-sm-1">
+				<button class="btn btn-sm btn-info" data-toggle="modal" data-target="#myModal">
+					<i class="ace-icon fa fa-plus bigger-110"></i>
+					添加标签
+				</button>
+			</div>
+
+		</div>
+		<!-- 主体 -->
+		<div class="row">
+			<div class="col-xs-12">
+				<div>
+					<form class="ajaxForm" name="flag_order" method="post" action="{:url('admin/Plug/flag_order')}" >
+						<table class="table table-striped table-bordered table-hover" id="dynamic-table">
+							<thead>
+							<tr>
+								<th class="center" style="width: 10%;">ID</th>
+								<th class="center" style="width: 10%;">排序</th>
+								<th class="center" style="width: 45%;">标签名称</th>
+								<th class="center" style="width: 15%;">标签类型</th>
+								<th class="center" style="border-right:#CCC solid 1px;width: 15%;">操作</th>
+							</tr>
+							</thead>
+
+							<tbody>
+
+							{foreach name="flag" item="v"}
+								<tr>
+									<td class="center" height="28" >{$v.flag_id}</td>
+									<td class="center"><input name="{$v.flag_id}" value="{$v.flag_order}" class="list_order center news_order"/></td>
+									<td class="center">{$v.flag_name}</td>
+									<td class="center">
+										{if condition="$v['flag_type'] eq 0"}<span style="color:#03C">文章类</span>{/if}
+										{if condition="$v['flag_type'] eq 1"}<span style="color:#03C">视频类</span>{/if}
+										{if condition="$v['flag_type'] eq 2"}<span style="color:#03C">产品类</span>{/if}
+									</td>
+									<td class="center">
+										<div class="action-buttons">
+											<a class="green flagedit-btn" href="{:url('admin/Plug/flag_edit')}" data-id="{$v.flag_id}" title="修改">
+												<i class="ace-icon fa fa-pencil-square-o bigger-130"></i>
+											</a>
+											<a class="red confirm-rst-url-btn" data-info="你确定要删除吗？" href="{:url('admin/Plug/flag_del',array('flag_id'=>$v['flag_id'],'p'=>input('p',1)))}" title="删除">
+												<i class="ace-icon fa fa-trash-o bigger-130"></i>
+											</a>
+										</div>
+									</td>
+								</tr>
+							{/foreach}
+							<tr>
+								<td height="50" align="left"></td>
+								<td height="50" align="center"><button id="btnorder" class="btn btn-white btn-yellow btn-sm">排序</button></td>
+								<td height="50" colspan="3" align="right">{$page}</td>
+							</tr>
+							</tbody>
+						</table>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<!-- 显示添加模态框（Modal） -->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<form class="form-horizontal ajaxForm2" name="flag_add" method="post" action="{:url('admin/Plug/flag_runadd')}">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+							<h4 class="modal-title" id="myModalLabel">添加标签</h4>
+						</div>
+						<div class="modal-body">
+
+							<div class="row">
+								<div class="col-xs-12">
+
+									<div class="form-group">
+										<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 标签类型： </label>
+										<div class="col-sm-10">
+											<select name="flag_type" class="col-sm-4 selector" required>
+												<option value="">请选择标签类型</option>
+													<option value="0">文章类</option>
+													<option value="1">视频类</option>
+													<option value="2">产品类</option>
+											</select>
+										</div>
+									</div>
+									<div class="space-4"></div>
+
+									<div class="form-group">
+										<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 标签名称： </label>
+										<div class="col-sm-10">
+											<input type="text" name="flag_name" id="flag_name" placeholder="输入标签名称 " class="col-xs-10 col-sm-5" required/>
+										</div>
+									</div>
+									<div class="space-4"></div>
+
+									<div class="form-group">
+										<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 排序： </label>
+										<div class="col-sm-10">
+											<input type="number" name="flag_order" id="flag_order" value="0" class="col-xs-10 col-sm-3" required/>
+											<span class="lbl">&nbsp;&nbsp;<span class="red">*</span>从小到大排序</span>
+										</div>
+									</div>
+									<div class="space-4"></div>
+
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="submit" class="btn btn-primary">
+								保存
+							</button>
+							<button class="btn btn-info" type="reset">
+								重置
+							</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">
+								关闭
+							</button>
+						</div>
+					</div><!-- /.modal-content -->
+				</div><!-- /.modal-dialog -->
+			</form>
+		</div><!-- /.modal -->
+
+		<!-- 显示修改模态框（Modal） -->
+		<div class="modal fade in" id="myModaledit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-backdrop fade in" id="gbbb" style="height: 100%;"></div>
+			<form class="form-horizontal ajaxForm2" name="flag_runedit" method="post" action="{:url('admin/Plug/flag_runedit')}">
+				<input type="hidden" name="flag_id" id="editflag_id" value="" />
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" id="gb" data-dismiss="modal" aria-hidden="true">×</button>
+							<h4 class="modal-title" id="myModalLabel">修改标签</h4>
+						</div>
+						<div class="modal-body">
+
+							<div class="row">
+								<div class="col-xs-12">
+
+									<div class="form-group">
+										<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 标签类型： </label>
+										<div class="col-sm-10">
+											<select name="flag_type" id="editflag_type" class="col-sm-4 selector" required>
+												<option value="">请选择标签类型</option>
+													<option value="0">文章类</option>
+													<option value="1">视频类</option>
+													<option value="2">产品类</option>
+											</select>
+										</div>
+									</div>
+									<div class="space-4"></div>
+
+									<div class="form-group">
+										<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 标签名称： </label>
+										<div class="col-sm-10">
+											<input type="text" name="flag_name" id="editflag_name" placeholder="输入链接名称" class="col-xs-10 col-sm-5" required/>
+										</div>
+									</div>
+									<div class="space-4"></div>
+
+									<div class="form-group">
+										<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 排序： </label>
+										<div class="col-sm-10">
+											<input type="number" name="flag_order" id="editflag_order" value="50" class="col-xs-10 col-sm-3" required/>
+											<span class="lbl">&nbsp;&nbsp;<span class="red">*</span>从小到大排序</span>
+										</div>
+									</div>
+									<div class="space-4"></div>
+
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="submit" class="btn btn-primary">
+								保存
+							</button>
+							<button type="button" class="btn btn-default" id="gbb" >
+								关闭
+							</button>
+						</div>
+					</div><!-- /.modal-content -->
+				</div><!-- /.modal-dialog -->
+			</form>
+		</div><!-- /.modal -->
+
+	</div><!-- /.page-content -->
+{/block}
+
+

@@ -1,0 +1,94 @@
+<!--底部foot-->
+<div class="footer">
+	<div class="foot">
+		<!--友情链接-->
+		<div class="foota">
+			{foreach name="linktype" item="lst" key="l"}
+				<span>
+					<select onchange="window.open(this.value)">
+						<option>{$lst['plug_linktype_name']}</option>
+                        {php}$links=get_links($lst['plug_linktype_id']);{/php}
+                        {volist name="links" id="ls" length='15'}
+                        	<option value="{$ls.plug_link_url}">{$ls.plug_link_name}</option>
+                        {/volist}
+					</select>
+				</span>
+			{/foreach}
+		</div>
+		<div class="fontb">
+			<p>
+				{YunCMF:album name="menubottomd" pid="$menubot" field="id,parentid,menu_name,menu_type,menu_address" order="listorder asc" limit="15"}
+				{foreach name="menubottomd" item="vq" key="q"}
+					{if condition="$vq['menu_type'] eq 4"}
+						<a href="{:url('home/Singlepage/index',array('id'=>$vq['id']))}">{$vq['menu_name']}</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+					{elseif condition="$vq['menu_type'] eq 2"}
+						<a href="{$vq['menu_address']}">{$vq['menu_name']}</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+					{else/}
+						<a href="{:url('home/Listn/index',array('id'=>$vq['id']))}">{$vq['menu_name']}</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+					{/if}
+					
+				{/foreach}
+				<a href="{:url('home/Index/map')}">网站地图</a>
+			</p>
+			<br>
+			<p>© 2018 {$site_copyright}版权所有 {$site_icp}<br>政府网站标识码：4408000031　办公地址：{$site_address} 邮编：524037<br>电话：{$site_tel} 电子邮箱：{$site_admin_email}</p>
+			<div class="fontb1">
+				<a href="http://121.43.68.40/exposure/jiucuo.html?site_code=4408000031&url=http%3A%2F%2Fwww.zjswater.gov.cn" target="_blank">
+					<img src="{$theme_path}public/images/jiucuo.png" width="110" height="55">
+				</a>
+			</div>
+			<div class="fontb2">
+				<a href="http://bszs.conac.cn/sitename?method=show&id=1E0AAB96862377C5E053012819ACD7DD" target="_blank">
+					<img src="{$theme_path}public/images/red.png" width="80" height="80">
+				</a>
+			</div>
+			<div class="fontb3">
+				<img src="{$theme_path}public/images/fp01.gif" width="49" height="50">
+			</div>
+			<div class="fontb4">
+				<img src="{$theme_path}public/images/fp02.gif" width="38" height="48">
+			</div>
+		</div>
+	</div>
+</div>
+<!--右侧悬浮栏-->
+<div class="floating_ck">
+	<dl>
+		<dt></dt>
+		<dd class="consult">
+			<span>微 信</span>
+			<div class="floating_left floating_ewm">
+				<i><img src="{$theme_path}public/images/erweima.png" width="110" height="110"></i>
+				<p class="qrcord_p01">扫一扫<br>微 信</p>
+			</div>
+		</dd>
+		<dd class="words">
+			<span>局长信箱</span>
+			<div class="floating_left floating_ewm">
+				<i><img src="{$theme_path}public/images/erweima.png" width="110" height="110"></i>
+				<p class="qrcord_p01">扫一扫<br>局长信箱</p>
+			</div>
+		</dd>
+		<dd class="quote">
+			<span>公众留言</span>
+			<div class="floating_left floating_ewm">
+				<i><img src="{$theme_path}public/images/erweima.png" width="110" height="110"></i>
+				<p class="qrcord_p01">扫一扫<br>公众留言</p>
+			</div>
+		</dd>
+		<dd class="qrcord">
+			<span>常见问题</span>
+			<div class="floating_left floating_ewm">
+				<i><img src="{$theme_path}public/images/erweima.png" width="110" height="110"></i>
+				<p class="qrcord_p01">扫一扫<br>常见问题</p>
+			</div>
+		</dd>
+		<dd class="wjdc">
+			<span>问卷调查</span>
+			<div class="floating_left floating_ewm">
+				<i><img src="{$theme_path}public/images/erweima.png" width="110" height="110"></i>
+				<p class="qrcord_p01">扫一扫<br>问卷调查</p>
+			</div>
+		</dd>
+	</dl>
+</div>

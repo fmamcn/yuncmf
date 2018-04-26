@@ -1,0 +1,208 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>{$site_seo_title} {$site_name}</title>
+	<meta name="keywords" content="{$site_seo_keywords}" />
+	<meta name="description" content="{$site_seo_description}">
+	{include file="public:head" /}
+</head>
+<body>
+	{include file="public:body_top" /}
+	<!--主要内容-->
+	<div class="cont">
+		<div class="conta">
+			<!--左侧幻灯-->
+			<div class="conta1">
+				<div id="fsD1" class="focus">
+					<div id="D1pic1" class="fPic">
+						<!--幻灯片展示图用的是竖屏图片-->
+						{YunCMF:article name="newsppt" cid="$news" field="title,hits,scontent,n_id,img,img_w,columnid,modified,flag" order="modified desc" limit="8" type="flag" key="幻灯片"} 
+						{foreach name="newsppt" item="vj" key="j"}
+							<div class="fcon">
+								<a href="{:url('home/Article/index',array('id'=>$vj['n_id']))}" target="_blank" title="{$vj['title']}">
+									<img src="{$vj['img_w']|get_imgurl}" />
+								</a>
+								<span class="shadow">
+									<a href="{:url('home/Article/index',array('id'=>$vj['n_id']))}" target="_blank" title="{$vj['title']}">{$vj.title}</a>
+								</span>
+							</div>
+						{/foreach}
+					</div>
+					<div class="fbg">
+						<div class="D1fBt" id="D1fBt">
+							{foreach name="newsppt" item="vj" key="j"}
+								<a href="javascript:void(0)" class="current"><i>$j</i></a>
+							{/foreach}
+						</div>
+					</div>
+				</div>
+				<script type="text/javascript">
+					Qfast.add('widgets', { path: "{$theme_path}public/js/terminator2.2.min.js", type: "js", requires: ['fx'] });	
+					Qfast(false, 'widgets', function () {
+						K.tabs({
+							id: 'fsD1',	 //焦点图包裹id	
+							conId: "D1pic1",	//** 大图域包裹id	
+							tabId:"D1fBt",	
+							tabTn:"a",
+							conCn: '.fcon', //** 大图域配置class		 
+							auto: 1,	 //自动播放 1或0
+							effect: 'fade',	 //效果配置
+							eType: 'click', //** 鼠标事件
+							pageBt:true,//是否有按钮切换页码
+							bns: ['.prev', '.next'],//** 前后按钮配置class							
+							interval: 4000	//** 停顿时间	
+						}) 
+					})	
+				</script> 
+			</div>
+			<!--右侧新闻列表-->
+			<div class="conta2">
+				<div class="tabmenua">
+					<ul>
+						<li onmouseover="tabChange(this,'tabcontenta')" class="cli ">
+							<a href={:url('home/Listn/index',array('id'=>2))}">
+								<span class="cli1">&nbsp;</span>水务要闻
+							</a>
+						</li>
+						<li onmouseover="tabChange(this,'tabcontenta') " >
+							<a href="{:url('home/Listn/index',array('id'=>20))}">
+								<span class="cli2">&nbsp;</span>三防信息
+							</a>
+						</li>
+						<li onmouseover="tabChange(this,'tabcontenta')" >
+							<a href="{:url('home/Listn/index',array('id'=>11))}">
+								<span class="cli3">&nbsp;</span>公告公示
+							</a>
+						</li>
+						<li onmouseover="tabChange(this,'tabcontenta')" >
+							<a href="http://www.gd.gov.cn/govpub/xxts/" target="_blank">
+								<span class="cli4">&nbsp;</span>政声传递
+							</a>
+						</li>
+					</ul>
+		 		</div>
+				<div id="tabcontenta">
+					<!--水务要闻-->
+					<ul name="tabul">
+						{YunCMF:article name="lastnews" cid="$news" field="title,hits,scontent,n_id,img,img_w,columnid,modified" order="modified desc" limit="8" } 
+						{foreach name="lastnews" item="vk" key="k"}
+							<li>
+								<a href="{:url('home/Article/index',array('id'=>$vk['n_id']))}" target="_blank" title="{$vk['title']}">{$vk.title} </a>
+								<span>{$vk.modified|date='Y-m-d',###}</span>
+							</li>
+						{/foreach}
+					</ul>
+					<!--政策解读-->
+					<ul class="hidden">
+						{YunCMF:article name="lastdecode" cid="20" field="title,hits,scontent,n_id,img,img_w,columnid,modified" order="modified desc" limit="8" } 
+						{foreach name="lastdecode" item="vl" key="l"}
+							<li>
+								<a href="{:url('home/Article/index',array('id'=>$vl['n_id']))}" target="_blank" title="{$vl['title']}">{$vl.title} </a>
+								<span>{$vl.modified|date='Y-m-d',###}</span>
+							</li>
+						{/foreach}
+					</ul>
+					<!--公告公示-->
+					<ul class="hidden">
+						{YunCMF:article name="lastnotice" cid="$notice" field="title,hits,scontent,n_id,img,img_w,columnid,modified" order="modified desc" limit="8" } 
+						{foreach name="lastnotice" item="vm" key="m"}
+							<li>
+								<a href="{:url('home/Article/index',array('id'=>$vm['n_id']))}" target="_blank" title="{$vm['title']}">{$vm.title} </a>
+								<span>{$vm.modified|date='Y-m-d',###}</span>
+							</li>
+						{/foreach}
+					</ul>
+					<!--政声传递由底部JS代码生成-->
+					<ul class="hidden" id="zscd">
+					</ul>
+					<div class="clearflow"></div>
+				</div>
+			</div>
+		</div>
+		<div class="contb">
+			<div class="contb1">
+				<div class="contb1t">
+					<h2>水务专辑</h2>
+					<span><a href="{:url('home/Listn/index',array('id'=>27))}">&nbsp;</a></span>
+				</div>
+				<div class="contb1m">
+					<div class="Box_con clearfix">
+						<span class="btnl btn" id="btnl"></span>
+						<span class="btnr btn" id="btnr"></span>
+						<div class="conbox" id="BoxUl">
+							<!--水务专辑新闻列表-->
+							<ul>
+							{YunCMF:article name="menualbum" cid="27,28,29" field="title,hits,scontent,n_id,img,img_w,columnid,modified,flag" order="listorder asc" limit="8" type="flag" key="专辑"} 
+								{foreach name="menualbum" item="vp" key="p"}
+									<li class="cur">
+										<a href="{:url('home/Article/index',array('id'=>$vp['n_id']))}" target="_blank" title="{$vp.title}">
+											<img src="{$vp['img_w']|get_imgurl}" />
+										</a>
+									</li>
+								{/foreach}
+							</ul>
+						</div>
+					</div>
+					<script type="text/javascript">
+						//滚动元素id，左切换按钮，右切换按钮，切换元素个数id,滚动方式，切换方向，是否自动滚动，滚动距离，滚动时间，滚动间隔，显示个数
+						LbMove('BoxUl','btnl','btnr','BoxSwitch',true,'left',true,274,1000,5000,3);
+					</script> 
+				</div>
+			</div>
+			<div class="contb2">
+				<a href="http://www.gdbs.gov.cn/sites/dsft/gdswsbsdtzjft/index.html" target="_blank"><img src="{$theme_path}public/images/zt-2.jpg" width="278" height="134"></a>
+			</div>
+		</div>
+	</div>
+	{include file="public:footer" /}
+	<!--政声传递新闻列表获取-->
+	<script type="text/javascript">
+		$(function() {
+			var titleNumInt = 40;
+			var pageSizeInt = 8;
+			$.ajax({
+				url : 'http://app.gd.gov.cn/xxts/pushinfo_json.php',
+				dataType : "jsonp",
+				jsonp : "pushInfoJsonpCallBack",
+				jsonpCallback : "pushInfoJsonpCallBack",
+				success : function(data) {
+					$.each(data, function(i, json) {
+						var title=delHtmlTag(json.title);
+						var pubDate=delHtmlTag(json.pubDate);
+						if(i<pageSizeInt){
+						var title=delHtmlTag(json.title);
+							if(title.length>=titleNumInt)
+								$("#zscd").append("<li><span>"+getdate(1,trim(pubDate))+"</span><a href"+"=\""+json.link+"\" title=\""+title+"\" target=\"_blank\">" + title.substring(0,titleNumInt)+"..</a></li>");
+							else
+								$("#zscd").append("<li><span>"+getdate(1,trim(pubDate))+"</span><a href"+"=\""+json.link+"\" title=\""+title+"\" target=\"_blank\">" + title+"</a></li>");
+						} 
+					});
+				},
+				error : function() {
+				//alert('fail');
+				}
+			})
+		});
+		function delHtmlTag(str){	
+			return str.replace(/<[^>]+>/g,"");//去掉所有的html标记	
+		}
+		function trim(s){
+			return s.replace(/(^\s*)|(\s*$)/g, "");
+		}
+		 
+		function getdate(s,d){
+			var date = new Date(d);
+			var year=date.getFullYear();
+			var Month=date.getMonth()+1;
+			var Day=date.getDate();
+			Month = Month < 10 ? '0' + Month : Month;
+			Day = Day < 10 ? '0' + Day : Day;
+			if (s==1)
+				return year+'-'+Month+'-'+Day;
+			else
+		 		return Month+'-'+Day;
+		}
+	</script>
+</body>
+</html>

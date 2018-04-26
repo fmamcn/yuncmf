@@ -1,0 +1,472 @@
+{extend name="admin@public/base" /}
+{block name="main-content"}
+	<!--系统参数设置-短信设置页-->
+	<div id="sidebar2" class="sidebar h-sidebar navbar-collapse collapse breadcrumbs-fixed" data-sidebar="true" data-sidebar-scroll="true" data-sidebar-hover="true">
+		<!--当前操作-->
+		<div class="nav-wrap-up pos-rel">
+			<div class="nav-wrap">
+				<ul class="nav nav-list">
+					{foreach name="menus_child" item="k"}
+					<li>
+						<a href="{:url(''.$k['name'].'')}">
+						<o class="font12 {if condition="$id_curr eq $k['id']"}rigbg{/if}">{$k.title}</o>
+						</a>
+						<b class="arrow"></b>
+					</li>
+					{/foreach}
+				</ul>
+			</div>
+		</div><!-- /.nav-list -->
+	</div>
+	<div class="page-content">
+		<!--操作提示-->
+		<a class="btn btn-link pull-right" onclick="showtips();" style="z-index: 999;display: none;" id="lightbulb">
+			<i class="ace-icon fa fa-lightbulb-o"></i>
+		</a>
+		<div class="page-header" style="display: none;" id="currdoing">
+			<h1>
+				您当前操作
+				<small>
+					<i class="ace-icon fa fa-angle-double-right"></i>
+					短信设置
+				</small>
+			</h1>
+		</div>
+		<div class="alert alert-info alert-fixed" id="tips">
+			<button class="close" onclick="hidetips();">
+				<i class="ace-icon fa fa-times"></i>
+			</button>
+			<div class="title">
+				<i class="fa fa-lightbulb-o"></i>
+				<h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+			</div>
+			<ul>
+				<li>短信平台采用第三方短信通道，核心发送方法请修改app\common.php中的短信类!</li>
+			</ul>
+		</div>
+		<script type="text/javascript">
+			function showtips(){
+				$("#tips").show();
+				$("#lightbulb").hide();
+				$("#currdoing").hide();
+			}
+			function hidetips(){
+				$("#tips").hide();
+				$("#lightbulb").show();
+				$("#currdoing").show();
+			}
+			setTimeout(function(){$("#tips").hide();$("#lightbulb").show();$("#currdoing").show();}, 10000);
+		</script>
+		<!--主体-->
+		<div class="row">
+			<div class="col-xs-12">
+				<form class="form-horizontal ajaxForm" name="smssys" method="post" action="{:url('admin/Sys/runsmssys')}">
+
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 接口ID： </label>
+						<div class="col-sm-9">
+							<input type="text" name="AccessKeyId" id="qq_appid" value="{$sms_sys.AccessKeyId}" placeholder="请输入AccessKeyId" class="col-xs-10 col-sm-5" required/>
+							<span class="lbl">&nbsp;&nbsp;<span class="red">*</span>必填</span>
+							<span class="help-inline col-xs-12 col-sm-7">
+								<span class="middle" id="resone"></span>
+							</span>
+						</div>
+					</div>
+					<div class="space-4"></div>
+
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 接口密码： </label>
+						<div class="col-sm-9">
+							<input type="password" name="accessKeySecret" id="password" value="{$sms_sys.accessKeySecret}" placeholder="accessKeySecret" class="col-xs-10 col-sm-5" required/>
+							<span class="lbl">&nbsp;&nbsp;<span class="red">*</span>必填</span>
+							<span class="help-inline col-xs-12 col-sm-7">
+								<span class="middle" id="restwo"></span>
+							</span>
+						</div>
+					</div>
+					<div class="space-4"></div>
+
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 短信模板： </label>
+						<div class="col-sm-9">
+							<span class="col-xs-10 col-sm-5">
+								<span class="btn btn-sm btn-success" data-toggle="modal" data-target="#myModal">
+									<i class="ace-icon fa fa-plus bigger-110"></i>
+									添加短信模板
+								</span>
+								<span class="btn btn-sm btn-info" id="view_sms_template">
+									<i class="ace-icon fa fa-eye bigger-110"></i>
+									查看短信模板
+								</span>
+							</span>
+							<span class="help-inline col-xs-12 col-sm-7">
+								<span class="middle" id="restwo"></span>
+							</span>
+						</div>
+					</div>
+
+					<div class="space-4"></div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 验证码有效时间： </label>
+						<div class="col-sm-9" style="padding-top:5px;">
+							<select id="sms_time_out" name="sms_time_out">
+								<option value="600" {if condition='$sms_sys.sms_time_out eq 600'}selected{/if}>10分钟</option>
+								<option value="1200" {if condition='$sms_sys.sms_time_out eq 1200'}selected{/if}>20分钟</option>
+								<option value="1800" {if condition='$sms_sys.sms_time_out eq 1800'}selected{/if}>30分钟</option>
+								<option value="3600" {if condition='$sms_sys.sms_time_out eq 3600'}selected{/if}>1小时</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="space-4"></div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 是否开启： </label>
+						<div class="col-sm-9" style="padding-top:5px;">
+							<input name="sms_open" id="sms_open" {if condition="$sms_sys.sms_open eq 1"}checked{/if} value="1" class="ace ace-switch ace-switch-4 btn-flat col-xs-10 col-sm-5" type="checkbox" /> 
+							<span class="lbl middle help-inline" >&nbsp;&nbsp;* 默认开启，关闭则开启邮箱注册</span>
+						</div>
+					</div>
+
+					<div class="clearfix form-actions">
+						<div class="col-sm-offset-3 col-sm-9">
+							<button class="btn btn-info" type="submit">
+								<i class="ace-icon fa fa-check bigger-110"></i>
+								保存
+							</button>
+
+							&nbsp; &nbsp; &nbsp;
+							<button class="btn" type="reset">
+								<i class="ace-icon fa fa-undo bigger-110"></i>
+								重置
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<!-- 显示添加模态框（Modal） -->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<form class="form-horizontal ajaxForm2" name="sms_add" method="post" action="{:url('admin/Sys/sms_template_runadd')}">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+									aria-hidden="true">×
+							</button>
+							<h4 class="modal-title" id="myModalLabel">
+								添加短信模板
+							</h4>
+						</div>
+						<div class="modal-body">
+
+							<div class="row">
+								<div class="col-xs-12">
+
+									<div class="form-group">
+										<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 发送场景： </label>
+										<div class="col-sm-10">
+											<input type="text" name="send_scene" id="send_scene" placeholder="如：用户注册" class="col-xs-10 col-sm-5" required/>
+										</div>
+									</div>
+									<div class="space-4"></div>
+
+									<div class="form-group">
+										<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 场景代码： </label>
+										<div class="col-sm-10">
+											<input type="text" name="scene_code" id="scene_code" placeholder="如：reg" class="col-xs-10 col-sm-5" onBlur="checkSceneCode(this.value);" required/>
+											<span class="lbl" id="codenotic">
+												<span class="red">*</span>
+												请同步修改到前端调用参数，默认代码reg不能修改
+											</span>
+										</div>
+									</div>
+									<div class="space-4"></div>
+
+									<div class="form-group">
+										<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 签名： </label>
+										<div class="col-sm-10">
+											<input type="text" name="sms_sign" id="sms_sign" placeholder="一般为企业名称，如：中国移动" class="col-xs-10 col-sm-5"/>
+										</div>
+									</div>
+									<div class="space-4"></div>
+
+									<div class="form-group">
+										<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 短信内容： </label>
+										<div class="col-sm-10">
+											<textarea name="tpl_content" id="tpl_content" class="col-xs-10 col-sm-6" maxlength="60" style="height: 80px;" placeholder="例：尊敬的#user_name#,您的验证码为#code#,本验证码有效时间为10分钟【#sms_sign#】"></textarea>
+											<label class="input_last">已限制在60个字以内</label>
+										</div>
+									</div>
+									<div class="space-4"></div>
+
+									<div class="form-group">
+										<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 参数说明： </label>
+										<span class="col-xs-10 col-sm-5" style="float: left;padding-top: 7px;">
+											<span class="red">验证码#code#<br>用户名#user_name#<br>签名【#sms_sign#】</span>
+										</span>
+										<label class="input_last">请选择相关参数替换到要发送的内容上</label>
+									</div>
+									<div class="space-4"></div>
+
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="submit" class="btn btn-primary">
+								提交保存
+							</button>
+							<button class="btn btn-info" type="reset">
+								重置
+							</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">
+								关闭
+							</button>
+						</div>
+					</div><!-- /.modal-content -->
+				</div><!-- /.modal-dialog -->
+			</form>
+		</div><!-- /.modal -->
+
+		<!-- 短信模板列表模态框（Modal） -->
+		<div class="modal fade in" id="sms_template_modal" tabindex="-2" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-backdrop fade in" id="gbbb" style="height: 100%;"></div>
+			<div class="form-horizontal ajaxForm2" name="sms_template_modal">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" id="close_sms_template" data-dismiss="modal"
+									aria-hidden="true">×
+							</button>
+							<h4 class="modal-title" id="myModalLabel">
+								短信模板列表
+							</h4>
+						</div>
+						<div class="modal-body">
+
+							<div class="row">
+								<div class="col-xs-12">
+
+									<table class="table table-striped table-bordered table-hover" id="dynamic-table">
+										<thead>
+										<tr>
+											<th class="center" style="width: 5%;">ID</th>
+											<th class="center" style="width: 13%;">发送场景</th>
+											<th class="center" style="width: 10%;">场景代码</th>
+											<th class="center" style="width: 12%;">短信签名</th>
+											<th class="center" style="width: 50%;">短信内容</th>
+											<th class="center" style="border-right:#CCC solid 1px;width: 10%;">操作</th>
+										</tr>
+										</thead>
+
+										<tbody>
+										{foreach name="sms_template" item="v"}
+											<tr>
+												<td height="28" class="center">{$v.tpl_id}</td>
+												<td class="center">{$v.send_scene}</td>
+												<td class="center">{$v.scene_code}</td>
+												<td class="center">{$v.sms_sign}</td>
+												<td class="center">{$v.tpl_content}</td>
+												<td class="center">
+													<div class="hidden-sm hidden-xs action-buttons">
+														<a class="green sms_templateedit-btn" id="{$v['tpl_id']}" href="#" title="修改" onclick="changeScene(this.id)">
+															<i class="ace-icon fa fa-pencil-square-o bigger-130"></i>
+														</a>
+														{if condition="$v.scene_code neq 'reg'"}
+															{if condition="$v.scene_code neq 'reset'"}
+														<a class="red confirm-rst-url-btn" data-info="你确定要删除吗？" href="{:url('admin/Sys/sms_template_del',array('tpl_id'=>$v['tpl_id']))}" title="删除">
+															<i class="ace-icon fa fa-trash-o bigger-130"></i>
+														</a>
+														{/if}{/if}
+													</div>
+												</td>
+											</tr>
+										{/foreach}
+											<tr>
+												<td height="50" colspan="6" align="right">{$page}</td>
+											</tr>
+										</tbody>
+									</table>
+
+								</div>
+							</div>
+
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-sm btn-success" data-toggle="modal" data-target="#myModal" id="add_sms_template">
+								<i class="ace-icon fa fa-plus bigger-110"></i>
+								添加短信模板
+							</button>
+							<button type="button" class="btn btn-sm btn-default" id="close_sms_template_b" >
+								关闭
+							</button>
+						</div>
+					</div><!-- /.modal-content -->
+				</div><!-- /.modal-dialog -->
+			</form>
+		</div><!-- /.modal -->
+
+		<!-- 显示修改模态框（Modal） -->
+		<div class="modal fade in" id="myModaledit" tabindex="-3" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-backdrop fade in" id="gbbb" style="height: 100%;"></div>
+			<form class="form-horizontal ajaxForm2" name="sms_template_runedit" method="post" action="{:url('admin/Sys/sms_template_runedit')}">
+				<input type="hidden" name="tpl_id" id="edittpl_id" value="" />
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" id="gb" data-dismiss="modal" aria-hidden="true">×</button>
+							<h4 class="modal-title" id="myModalLabel">
+								修改短信模板
+							</h4>
+						</div>
+						<div class="modal-body">
+
+							<div class="row">
+								<div class="col-xs-12">
+
+									<div class="form-group">
+										<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 发送场景： </label>
+										<div class="col-sm-10">
+											<input type="text" name="send_scene" id="editsend_scene" class="col-xs-10 col-sm-5" required/>
+										</div>
+									</div>
+									<div class="space-4"></div>
+
+									<div class="form-group">
+										<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 场景代码： </label>
+										<div class="col-sm-10">
+											<input type="text" name="scene_code" id="editscene_code" placeholder="如：reg" class="col-xs-10 col-sm-5" required/>
+											<span class="lbl">&nbsp;&nbsp;<span class="red">*</span>请同步修改到前端调用参数，默认代码reg不能修改</span>
+										</div>
+									</div>
+									<div class="space-4"></div>
+
+									<div class="form-group">
+										<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 签名： </label>
+										<div class="col-sm-10">
+											<input type="text" name="sms_sign" id="editsms_sign" class="col-xs-10 col-sm-5"/>
+										</div>
+									</div>
+									<div class="space-4"></div>
+
+									<div class="form-group">
+										<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 短信内容： </label>
+										<div class="col-sm-10">
+											<textarea name="tpl_content" id="edittpl_content" class="col-xs-10 col-sm-6" maxlength="60" style="height: 80px;"></textarea>
+											<label class="input_last">已限制在60个字以内</label>
+										</div>
+									</div>
+									<div class="space-4"></div>
+
+									<div class="form-group">
+										<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 参数说明： </label>
+										<span class="col-xs-10 col-sm-5" style="float: left;padding-top: 7px;">
+											<span class="red">验证码#code#<br>用户名#user_name#<br>签名【#sms_sign#】</span>
+										</span>
+										<label class="input_last">请选择相关参数替换到要发送的内容上</label>
+									</div>
+									<div class="space-4"></div>
+
+								</div>
+							</div>
+
+						</div>
+						<div class="modal-footer">
+							<button type="submit" class="btn btn-primary">
+								提交保存
+							</button>
+							<button type="button" class="btn btn-default" id="gbb" >
+								关闭
+							</button>
+						</div>
+					</div><!-- /.modal-content -->
+				</div><!-- /.modal-dialog -->
+			</form>
+		</div><!-- /.modal -->
+
+	</div><!-- /.page-content -->
+	<script>
+	/* 显示短信模板模态框 */
+	$(function () {
+		$('body').on('click','#view_sms_template',function () {
+			$("#sms_template_modal").show(300);
+		});
+	});
+	/* 关闭短信模板模态框 */
+	$("#close_sms_template").click(function () {
+		$("#sms_template_modal").hide(200);
+	});
+	$("#close_sms_template_b").click(function () {
+		$("#sms_template_modal").hide(200);
+	});
+	/* 在短信模板模态框显示添加短信模板模态框 */
+	$("#add_sms_template").click(function () {
+		$("#sms_template_modal").hide(200);
+	});
+
+	/* 在短信模板模态框显示修改短信模板模态框 */
+	function changeScene(id){
+		$.ajax({
+				type : "GET",			
+				url:"{:url('admin/Sys/sms_template_edit')}",//+tab,
+				data :{tpl_id:id},// 你的formid 搜索表单 序列化提交
+				success: function(data)
+				{
+					if (data.code == 1) {
+						var obj = document.getElementById("myModaledit");
+						obj.style.zIndex = 2000;
+						$("#myModaledit").show();
+						$("#edittpl_id").val(data.tpl_id);
+						$("#editsend_scene").val(data.send_scene);
+						$("#editsms_sign").val(data.sms_sign);
+						$("#edittpl_content").val(data.tpl_content);
+						$("#editscene_code").val(data.scene_code);
+						if (data.scene_code == "reg" || data.scene_code == "reset") {
+							document.getElementById("editscene_code").readOnly =true;
+							document.getElementById("editsend_scene").readOnly =true;
+						} else {
+							document.getElementById("editscene_code").readOnly =false;
+							document.getElementById("editsend_scene").readOnly =false;
+						}
+					} else {
+						layer.alert(data.msg, {icon: 5});
+					}
+				}
+			});	
+	}
+
+	/**
+	 * 检验场景代码是否重复
+	 * @param tel
+	 * @returns {boolean}
+	 */
+	function checkSceneCode(code){
+		if(code == ''){
+			$('#codenotic').css('color','red');
+			$('#codenotic').html('* 代码不能为空');
+			flag = false;
+		}else{
+			$.ajax({
+					type : "GET",			
+					url:"{:url('admin/sys/issetSceneCode')}",//+tab,
+					data :{code:code},// 你的formid 搜索表单 序列化提交
+					success: function(data)
+					{
+						if(data == '0')
+						{
+							$('#codenotic').css('color','green');
+							$('#codenotic').html('* 可以使用');
+							flag = true;
+						}else{
+							$('#codenotic').css('color','red');
+							$('#codenotic').html('* 代码已被使用');
+							$("#edittpl_id").val(data.tpl_id);
+							flag = false;
+						}
+					}
+				});	
+		}
+	}
+
+	</script>
+{/block}

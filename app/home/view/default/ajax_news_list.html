@@ -1,0 +1,18 @@
+<ul class="dlm_list">
+	{volist name="lists['article']" id="va"}
+		<li>
+			<span class="contd_la1m1">&gt;</span>
+			<a href="{:url('home/Article/index',array('id'=>$va['n_id']))}" target="_blank" title="{$va['title']}">{$va['title']}</a>
+			<span class="contd_la1m2">{$va['modified|date='Y-m-d',###']}</span>
+		</li>
+		<div class="clear"></div>
+	{/volist}
+</ul>
+<style type="text/css">
+	.pagination>li {
+		display: inline !important;
+	}
+</style>
+<div class="ep-pages" style="text-align: center;">
+	{$page_html}
+</div>

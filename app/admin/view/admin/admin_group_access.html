@@ -1,0 +1,145 @@
+{extend name="admin@public/base" /}
+{block name="main-content"}
+	<!--管理员设置-管理组权限编辑-->
+	<div class="breadcrumbs-fixed" style="margin-left: 190px;background: #FFFFFF;">
+		<!--当前操作-->
+		<div class="nav-wrap-up pos-rel">
+			<div class="nav-wrap">
+				{if condition="($id_curr neq '') AND (!empty($menus_child))"}
+					<ul class="nav nav-list">
+						{foreach name="menus_child" item="k"}
+						<li>
+							<a href="{:url(''.$k['name'].'')}">
+							<o class="font12 {if condition="$id_curr eq $k['id']"}rigbg{/if}">{$k.title}</o>
+							</a>
+							<b class="arrow"></b>
+						</li>
+						{/foreach}
+					</ul>
+				{else /}
+					<div class="nav nav-list doingfixed">
+						<h4 style="margin-left: 15px;">
+							您当前操作
+							<small>
+								<i class="ace-icon fa fa-angle-double-right bigger-110"></i>管理组权限编辑
+							</small>
+							<a href="{:url('admin/Admin/admin_group_list')}" class="btn btn-white btn-round btn-xs" style="float: right;margin-right: 15px;">
+								<i class="ace-icon fa fa-reply"></i>
+								返回
+							</a>
+						</h4>
+						<b class="arrow"></b>
+					</div>
+				{/if}
+			</div>
+		</div><!-- /.nav-list -->
+	</div>
+	<div class="page-content">
+		<!--操作提示-->
+		<a class="btn btn-link pull-right" onclick="showtips();" style="z-index: 999;display: none;" id="lightbulb">
+			<i class="ace-icon fa fa-lightbulb-o"></i>
+		</a>
+		<div class="alert alert-info alert-fixed" id="tips">
+			<button class="close" onclick="hidetips();">
+				<i class="ace-icon fa fa-times"></i>
+			</button>
+			<div class="title">
+				<i class="fa fa-lightbulb-o"></i>
+				<h4 title="提示相关设置操作时应注意的要点">配置规则</h4>
+			</div>
+			<ul>
+				<li>由于页面原因，权限分配为四级，同时控制左侧导航以及用户权限!</li>
+				<li>部分不需要分配的权限需要在AUTH的控制器里手动添加!</li>
+			</ul>
+		</div>
+		<script type="text/javascript">
+			function showtips(){
+				$("#tips").show();
+				$("#lightbulb").hide();
+			}
+			function hidetips(){
+				$("#tips").hide();
+				$("#lightbulb").show();
+			}
+			setTimeout(function(){$("#tips").hide();$("#lightbulb").show();}, 10000);
+		</script>
+		<!--主体-->
+		<div class="row">
+			<div class="col-xs-12">
+				<form class="form-horizontal ajaxForm2" name="admin_group_runaccess" method="post" action="{:url('admin/Admin/admin_group_runaccess')}">
+					<input name="id" id="id" type="hidden" value="{$admin_group.id}" />
+					<div class="form-group">
+						<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 用户组名： </label>
+						<div class="col-sm-10">
+							<input type="text" name="title" id="title" value="{$admin_group.title}" class="col-xs-10 col-sm-4" />
+						</div>
+					</div>
+					<div class="space-4"></div>
+					<table width="90%" border="0" align="center" cellpadding="0" cellspacing="0">
+						<tr>
+							<td height="30" style="padding-left:10px;border-bottom:#CCCCCC solid 1px; line-height:25px; background-color:#F4F8FB">
+								<label class="pos-rel">
+									<input type="checkbox" class="ace ace-checkbox-2" id='chkAll' onclick='CheckAll(this.form)' value="全选"/>
+									<span class="lbl"> 权限全选</span>
+								</label>
+							</td>
+						</tr>
+						{foreach name="datab" item="vo"}
+							<tr>
+								<td height="40" style="border-bottom:#CCCCCC solid 1px;padding-left:10px;">
+									<label>
+										<input {in name="vo.id" value="$admin_group['rules']"}checked{/in} name="new_rules[]" class="ace ace-checkbox-2 checkbox-parent" type="checkbox" value="{$vo.id}" dataid="id-{$vo['id']}" /><span class="lbl"> <strong>{$vo.title}</strong></span>
+									</label>
+								</td>
+							</tr>
+							{foreach name="vo['sub']" item="sub"}
+								<tr>
+									<td height="30" style="padding-left:30px;border-bottom:#E7EBF8 dashed 1px; color:#333333">
+										<label>
+											<input {in name="sub.id" value="$admin_group['rules']"}checked{/in} name="new_rules[]" id="{$sub.id}" class="ace ace-checkbox-2 checkbox-parent checkbox-child" type="checkbox" value="{$sub.id}" dataid="id-{$vo['id']}-{$sub['id']}" /><span class="lbl"> {$sub.title}</span>
+										</label>
+									</td>
+								</tr>
+								{foreach name="sub['sub']" item="subb"}
+									<tr>
+										<td height="30" style="padding-left:50px;border-bottom:#E7EBF8 dashed 1px; color:#666666">
+											<label class="thopen">
+												<input {in name="subb.id" value="$admin_group['rules']"}checked{/in} name="new_rules[]" class="ace ace-checkbox-2 checkbox-parent checkbox-child" type="checkbox" id="{$subb.id}" value="{$subb.id}" dataid="id-{$vo['id']}-{$sub['id']}-{$subb['id']}" />
+												<span class="lbl" style="margin-right:20px;"> {$subb.title}</span>
+											</label>
+										</td>
+									</tr>
+									{if condition="!empty($subb['sub'])"}
+										<tr>
+											<td height="30" style="padding-left:70px;border-bottom:#E7EBF8 dashed 1px; color:#666666">
+												{volist name="subb['sub']" id="subbb"}
+													<label class="thopen">
+														<input {in name="subbb.id" value="$admin_group['rules']"}checked{/in} name="new_rules[]" class="ace ace-checkbox-2 checkbox-child" type="checkbox" id="{$subbb.id}" value="{$subbb.id}" dataid="id-{$vo['id']}-{$sub['id']}-{$subb['id']}-{$subbb['id']}" />
+														<span class="lbl" style="margin-right:20px;"> {$subbb.title}</span>
+													</label>
+												{/volist}
+											</td>
+										</tr>
+									{/if}
+								{/foreach}
+							{/foreach}
+						{/foreach}
+					</table>
+					<div class="clearfix form-actions">
+						<div class="col-md-offset-3 col-md-9">
+							<button class="btn btn-info" type="submit">
+								<i class="ace-icon fa fa-check bigger-110"></i>
+								保存
+							</button>
+							&nbsp; &nbsp; &nbsp;
+							<button class="btn" type="reset">
+								<i class="ace-icon fa fa-undo bigger-110"></i>
+								重置
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div><!-- /.page-content -->
+{/block}

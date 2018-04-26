@@ -1,0 +1,47 @@
+{foreach name="arr" item="v"}
+	<tr>
+		<td class="center"><input name="{$v.id}" value="{$v.listorder}" class="list_order center"/></td>
+		<td class="center">{$v.id}</td>
+		<td style=padding-left:{if condition='$v.leftpin neq 0'}{$v.leftpin}{/if}px; >{$v.lefthtml}{$v.menu_name}</span></td>
+		<td class="center">
+			{switch name="v.menu_type"}
+			{case value="1"}<span class="label label-lg label-grey">频道栏目</span>{/case}
+			{case value="2"}<span class="label label-lg label-yellow">跳转栏目</span>{/case}
+			{case value="3"}<span class="label label-lg label-info">文章发布栏目</span>{/case}
+			{case value="5"}<span class="label label-lg label-success">产品发布栏目</span>{/case}
+			{case value="6"}<span class="label label-lg label-purple">视频发布栏目</span>{/case}
+			{default /}<span class="label label-lg label-primary">单页栏目</span>
+			{/switch}
+		</td>
+		<td class="center">{$v.menu_listtpl}</td>
+		<td class="center">{$v.menu_newstpl}</td>
+		<td class="center">
+			{if condition="$v['menu_open'] eq 1"}
+				<a class="red display-btn" href="{:url('admin/Menu/menu_state')}" data-id="{$v.id}" title="已显示">
+					<div><button class="btn btn-minier btn-yellow">显示</button></div>
+				</a>
+				{else/}
+				<a class="red display-btn" href="{:url('admin/Menu/menu_state')}" data-id="{$v.id}" title="已隐藏">
+					<div><button class="btn btn-minier btn-danger">隐藏</button></div>
+				</a>
+			{/if}
+		</td>
+		<td class="center">
+			<div class="hidden-sm hidden-xs action-buttons">
+				<a class="blue" href="{:url('admin/Menu/menu_add',array('id'=>$v['id']))}" data-toggle="tooltip" title="添加子类">
+					<i class="ace-icon fa fa-plus-circle bigger-130"></i>
+				</a>
+				<a class="green" href="{:url('admin/Menu/menu_edit',array('id'=>$v['id']))}" data-toggle="tooltip" title="修改">
+					<i class="ace-icon fa fa-pencil-square-o bigger-130"></i>
+				</a>
+				<a class="red confirm-rst-url-btn" href="{:url('admin/Menu/menu_del',array('id'=>$v['id']))}" data-info="若存在子菜单，则子菜单将一起被删除，你确定要删除吗？" data-toggle="tooltip" title="删除">
+					<i class="ace-icon fa fa-trash-o bigger-130"></i>
+				</a>
+			</div>
+		</td>
+	</tr>
+{/foreach}
+<tr>
+	<td align="center"><button id="btnorder" class="btn btn-white btn-yellow btn-sm">排序</button></td>
+	<td colspan="10">{$page}</td>
+</tr>

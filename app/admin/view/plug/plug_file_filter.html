@@ -1,0 +1,86 @@
+{extend name="admin@public/base" /}
+{block name="main-content"}
+	<!--扩展管理-文件清理--> 
+	<div id="sidebar2" class="sidebar h-sidebar navbar-collapse collapse breadcrumbs-fixed" data-sidebar="true" data-sidebar-scroll="true" data-sidebar-hover="true">
+		<!--当前操作-->
+		<div class="nav-wrap-up pos-rel">
+			<div class="nav-wrap">
+				<ul class="nav nav-list">
+					{foreach name="menus_child" item="k"}
+					<li>
+						<a href="{:url(''.$k['name'].'')}">
+						<o class="font12 {if condition="$id_curr eq $k['id']"}rigbg{/if}">{$k.title}</o>
+						</a>
+						<b class="arrow"></b>
+					</li>
+					{/foreach}
+				</ul>
+			</div>
+		</div><!-- /.nav-list -->
+	</div>
+	<div class="page-content">
+		<!--操作提示-->
+		<a class="btn btn-link pull-right" onclick="showtips();" style="z-index: 999;display: none;" id="lightbulb">
+			<i class="ace-icon fa fa-lightbulb-o"></i>
+		</a>
+		<div class="alert alert-info alert-fixed" id="tips">
+			<button class="close" onclick="hidetips();">
+				<i class="ace-icon fa fa-times"></i>
+			</button>
+			<div class="title">
+				<i class="fa fa-lightbulb-o"></i>
+				<h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+			</div>
+			<ul>
+				<li>有些文件在使用中但无法检测到，请谨慎清理!</li>
+			</ul>
+		</div>
+		<script type="text/javascript">
+			function showtips(){
+				$("#tips").show();
+				$("#lightbulb").hide();
+			}
+			function hidetips(){
+				$("#tips").hide();
+				$("#lightbulb").show();
+			}
+			setTimeout(function(){$("#tips").hide();$("#lightbulb").show();}, 10000);
+		</script>
+		<!--主体-->
+		
+		<div class="row maintop">
+			<div class="row">
+				<div class="col-xs-12">
+					<div>
+						<form id="alldel" name="alldel" method="post" action="{:url('admin/Plug/plug_file_alldel')}" >
+							<input name="p" id="p" value="{:input('p',1)}" type="hidden" />
+							<table class="table table-striped table-bordered table-hover" id="dynamic-table">
+								<thead>
+								<tr>
+									<th class="hidden-xs center">
+										<label class="pos-rel">
+											<input type="checkbox" class="ace" id='chkAll' onclick='CheckAll(this.form)' value="全选"/>
+											<span class="lbl"></span>
+										</label>
+									</th>
+									<th class="center">ID</th>
+									<th class="center">文件路径</th>
+									<th class="center">文件大小</th>
+									<th class="center">上传时间</th>
+									<th class="center">查看</th>
+									<th class="center" style="border-right:#CCC solid 1px;">操作</th>
+								</tr>
+								</thead>
+
+								<tbody id="ajax-data">
+									{include file="plug/ajax_plug_file_filter"/}
+								</tbody>
+							</table>
+						</form>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+{/block}

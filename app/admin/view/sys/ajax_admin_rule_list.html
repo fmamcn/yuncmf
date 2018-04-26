@@ -1,0 +1,53 @@
+{foreach name="admin_rule" item="v"}
+	<tr id="{$pid}-{$v.id}">
+		<td height="28" class="center">{$v.id}</td>
+		<td class="center">
+			<a data-id="{$v.id}" data-level="{$v.level}" href="{:url('admin/Sys/admin_rule_list',['pid'=>$v.id])}" style="cursor:pointer;" class="rule-list">
+				<span class="fa {if condition='$v.level egt 4'}fa-minus{else /}fa-plus{/if} blue"></span>
+			</a>
+		</td>
+		<td align="left" style='padding-left:{if condition="$v.leftpin neq 0"}{$v.leftpin}px{/if}' >{$v.lefthtml}{$v.title}</td>
+		<td align="left" style="padding-left:2vmin;">{$v.name}</td>
+		<td class="center">
+			{if condition="$v['notcheck'] eq 1"}
+			<a class="red notcheck-btn" href="{:url('admin/Sys/admin_rule_notcheck')}" data-id="{$v.id}" title="不检测">
+				<div id="zt{$v.id}"><button class="btn btn-minier btn-danger">不检测</button></div>
+			</a>
+			{else/}
+			<a class="red notcheck-btn" href="{:url('admin/Sys/admin_rule_notcheck')}" data-id="{$v.id}" title="检测">
+				<div id="zt{$v.id}"><button class="btn btn-minier btn-yellow">检测</button></div>
+			</a>
+			{/if}
+		</td>
+		<td class="center">
+			{if condition="$v['status'] eq 1"}
+			<a class="red display-btn" href="{:url('admin/Sys/admin_rule_state')}" data-id="{$v.id}" title="已显示">
+				<div id="zt{$v.id}"><button class="btn btn-minier btn-yellow">显示</button></div>
+			</a>
+			{else/}
+			<a class="red display-btn" href="{:url('admin/Sys/admin_rule_state')}" data-id="{$v.id}" title="已隐藏">
+				<div id="zt{$v.id}"><button class="btn btn-minier btn-danger">隐藏</button></div>
+			</a>
+			{/if}
+		</td>
+		<td class="hidden-sm hidden-xs center">{$v.level}级</td>
+		<td class="hidden-sm hidden-xs center">{$v.addtime|date='Y-m-d',###}</td>
+		<td class="hidden-sm hidden-xs center"><input name="{$v.id}" value="{$v.sort}" class="list_order center"/></td>
+		<td class="center">
+			<div class="hidden-sm hidden-xs action-buttons">
+				<a class="blue" href="{:url('admin/Sys/admin_rule_add',array('pid'=>$v['id']))}" title="添加子类">
+					<i class="ace-icon fa fa-plus-circle bigger-130"></i>
+				</a>
+				<a class="green" href="{:url('admin/Sys/admin_rule_edit',array('id'=>$v['id']))}" title="修改">
+					<i class="ace-icon fa fa-pencil-square-o bigger-130"></i>
+				</a>
+				<a class="green" href="{:url('admin/Sys/admin_rule_copy',array('id'=>$v['id']))}" title="复制">
+					<i class="ace-icon fa fa-exchange bigger-130"></i>
+				</a>
+				<a class="red confirm-rst-url-btn" href="{:url('admin/Sys/admin_rule_del',array('id'=>$v['id']))}" data-info="你确定要删除-{$v.title}-吗？" title="删除">
+					<i class="ace-icon fa fa-trash-o bigger-130"></i>
+				</a>
+			</div>
+		</td>
+	</tr>
+{/foreach}

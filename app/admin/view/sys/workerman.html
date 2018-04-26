@@ -1,0 +1,290 @@
+{extend name="admin@public/base" /}
+{block name="main-content"}
+	<!--系统参数设置-第三方登录页-->
+	<div id="sidebar2" class="sidebar h-sidebar navbar-collapse collapse breadcrumbs-fixed" data-sidebar="true" data-sidebar-scroll="true" data-sidebar-hover="true">
+		<!--当前操作-->
+		<div class="nav-wrap-up pos-rel">
+			<div class="nav-wrap">
+				<ul class="nav nav-list">
+					{foreach name="menus_child" item="k"}
+					<li>
+						<a href="{:url(''.$k['name'].'')}">
+						<o class="font12 {if condition="$id_curr eq $k['id']"}rigbg{/if}">{$k.title}</o>
+						</a>
+						<b class="arrow"></b>
+					</li>
+					{/foreach}
+				</ul>
+			</div>
+		</div><!-- /.nav-list -->
+	</div>
+	<div class="page-content">
+		<!--操作提示-->
+		<a class="btn btn-link pull-right" onclick="showtips();" style="z-index: 999;display: none;" id="lightbulb">
+			<i class="ace-icon fa fa-lightbulb-o"></i>
+		</a>
+		<div class="page-header" style="display: none;" id="currdoing">
+			<h1>
+				您当前操作
+				<small>
+					<i class="ace-icon fa fa-angle-double-right"></i>
+					Workerman设置
+				</small>
+			</h1>
+		</div>
+		<div class="alert alert-info alert-fixed" id="tips">
+			<button class="close" onclick="hidetips();">
+				<i class="ace-icon fa fa-times"></i>
+			</button>
+			<div class="title">
+				<i class="fa fa-lightbulb-o"></i>
+				<h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+			</div>
+			<ul>
+				<li>Workerman是一款纯PHP开发的开源高性能的PHP socket 服务器框架。</li>
+				<li>此处集成的是GatewayWorker，参考文档：http://doc2.workerman.net</li>
+			</ul>
+		</div>
+		<script type="text/javascript">
+			function showtips(){
+				$("#tips").show();
+				$("#lightbulb").hide();
+				$("#currdoing").hide();
+			}
+			function hidetips(){
+				$("#tips").hide();
+				$("#lightbulb").show();
+				$("#currdoing").show();
+			}
+			setTimeout(function(){$("#tips").hide();$("#lightbulb").show();$("#currdoing").show();}, 10000);
+		</script>
+		<!--主体-->
+		<div class="row">
+			<div class="tabbable">
+				<ul class="nav nav-tabs" id="myTab">
+					<li>
+						<a data-toggle="tab" href="#gateway">Gateway设置</a>
+					</li>
+					<li>
+						<a data-toggle="tab" href="#businessworker">BusinessWorker设置</a>
+					</li>
+					<li>
+						<a data-toggle="tab" href="#register">Register设置</a>
+					</li>
+
+					<li class="active">
+						<a data-toggle="tab" href="#app">应用设置</a>
+					</li>
+
+				</ul>
+				<form class="form-horizontal ajaxForm2" name="urlsys" method="post" action="{:url('admin/Sys/saveworkerman')}">
+					<fieldset>
+						<div class="tab-content">
+							<!--应用设置-->
+							<div id="app" class="tab-pane fade in active">
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 客服（协议-IP-端口）：</label>
+									<div class="col-sm-9">
+										<select name="config[csport][protocol]" class="col-xs-2" style="width: 100px;height: 33px;margin-right: 5px;" required>
+											<option value="HTTP" {if condition="$workerman.csport.protocol eq 'HTTP'"}selected="selected"{/if}>HTTP</option>
+											<option value="websocket" {if condition="$workerman.csport.protocol eq 'websocket'"}selected="selected"{/if}>websocket</option>
+											<option value="text" {if condition="$workerman.csport.protocol eq 'text'"}selected="selected"{/if}>text</option>
+											<option value="frame" {if condition="$workerman.csport.protocol eq 'frame'"}selected="selected"{/if}>frame</option>
+											<option value="ws" {if condition="$workerman.csport.protocol eq 'ws'"}selected="selected"{/if}>ws</option>
+										</select>
+										<input type="text" name="config[csport][ip]" value="{$workerman.csport.ip}" class="col-xs-2" style="margin-right: 5px;width: 120px;"/>
+										<input type="number" name="config[csport][port]" value="{$workerman.csport.port}" class="col-xs-1" />
+										<span class="help-inline col-xs-5">
+											<span class="lbl"> 端口(1-65535)，请避开常规端口</span>
+										</span>
+									</div>
+								</div>					
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 广告推送（协议-IP-端口）：</label>
+									<div class="col-sm-9">
+										<select name="config[adpush][protocol]" class="col-xs-2" style="width: 100px;height: 33px;margin-right: 5px;" required>
+											<option value="HTTP" {if condition="$workerman.adpush.protocol eq 'HTTP'"}selected="selected"{/if}>HTTP</option>
+											<option value="websocket" {if condition="$workerman.adpush.protocol eq 'websocket'"}selected="selected"{/if}>websocket</option>
+											<option value="text" {if condition="$workerman.adpush.protocol eq 'text'"}selected="selected"{/if}>text</option>
+											<option value="frame" {if condition="$workerman.adpush.protocol eq 'frame'"}selected="selected"{/if}>frame</option>
+											<option value="ws" {if condition="$workerman.adpush.protocol eq 'ws'"}selected="selected"{/if}>ws</option>
+										</select>
+										<input type="text" name="config[adpush][ip]" value="{$workerman.adpush.ip}" class="col-xs-2" style="margin-right: 5px;width: 120px;"/>
+										<input type="number" name="config[adpush][port]" value="{$workerman.adpush.port}" class="col-xs-1" />
+										<span class="help-inline col-xs-5">
+											<span class="lbl"> 端口(1-65535)，请避开常规端口</span>
+										</span>
+									</div>
+								</div>					
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 前端消息推送（协议-IP-端口）：</label>
+									<div class="col-sm-9">
+										<select name="config[webmsg][protocol]" class="col-xs-2" style="width: 100px;height: 33px;margin-right: 5px;" required>
+											<option value="HTTP" {if condition="$workerman.webmsg.protocol eq 'HTTP'"}selected="selected"{/if}>HTTP</option>
+											<option value="websocket" {if condition="$workerman.webmsg.protocol eq 'websocket'"}selected="selected"{/if}>websocket</option>
+											<option value="text" {if condition="$workerman.webmsg.protocol eq 'text'"}selected="selected"{/if}>text</option>
+											<option value="frame" {if condition="$workerman.webmsg.protocol eq 'frame'"}selected="selected"{/if}>frame</option>
+											<option value="ws" {if condition="$workerman.webmsg.protocol eq 'ws'"}selected="selected"{/if}>ws</option>
+										</select>
+										<input type="text" name="config[webmsg][ip]" value="{$workerman.webmsg.ip}" class="col-xs-2" style="margin-right: 5px;width: 120px;"/>
+										<input type="number" name="config[webmsg][port]" value="{$workerman.webmsg.port}" class="col-xs-1" />
+										<span class="help-inline col-xs-5">
+											<span class="lbl"> 端口(1-65535)，请避开常规端口</span>
+										</span>
+									</div>
+								</div>					
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> APP端消息推送（协议-IP-端口）：</label>
+									<div class="col-sm-9">
+										<select name="config[appmsg][protocol]" class="col-xs-2" style="width: 100px;height: 33px;margin-right: 5px;" required>
+											<option value="HTTP" {if condition="$workerman.appmsg.protocol eq 'HTTP'"}selected="selected"{/if}>HTTP</option>
+											<option value="websocket" {if condition="$workerman.appmsg.protocol eq 'websocket'"}selected="selected"{/if}>websocket</option>
+											<option value="text" {if condition="$workerman.appmsg.protocol eq 'text'"}selected="selected"{/if}>text</option>
+											<option value="frame" {if condition="$workerman.appmsg.protocol eq 'frame'"}selected="selected"{/if}>frame</option>
+											<option value="ws" {if condition="$workerman.appmsg.protocol eq 'ws'"}selected="selected"{/if}>ws</option>
+										</select>
+										<input type="text" name="config[appmsg][ip]" value="{$workerman.appmsg.ip}" class="col-xs-2" style="margin-right: 5px;width: 120px;"/>
+										<input type="number" name="config[appmsg][port]" value="{$workerman.appmsg.port}" class="col-xs-1" />
+										<span class="help-inline col-xs-5">
+											<span class="lbl"> 端口(1-65535)，请避开常规端口</span>
+										</span>
+									</div>
+								</div>
+							</div>
+							<!--Register设置-->
+							<div id="register" class="tab-pane fade">
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Register服务名称：</label>
+									<div class="col-sm-9">
+										<input type="text" name="config[register][name]" value="{$workerman.register.name}" class="col-xs-3" style="margin-right: 5px;width: 220px;"/>
+										<span class="help-inline col-xs-5">
+											<span class="lbl"> Register在后台服务名称</span>
+										</span>
+									</div>
+								</div>					
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Register协议IP:端口：</label>
+									<div class="col-sm-9">
+										<select name="config[register][protocol]" class="col-xs-2" style="width: 100px;height: 33px;margin-right: 5px;" required>
+											<option value="text" {if condition="$workerman.register.protocol eq 'text'"}selected="selected"{/if}>text</option>
+										</select>
+										<input type="text" name="config[register][ip]" value="{$workerman.register.ip}" class="col-sm-2" style="margin-right: 5px;width: 120px;"/>
+										<input type="number" name="config[register][port]" value="{$workerman.register.port}" class="col-sm-1" />
+										<span class="help-inline col-xs-5">
+											<span class="lbl"> 端口(1-65535)，请避开常规端口</span>
+										</span>
+									</div>
+								</div>					
+							</div>
+							<!--BusinessWorker设置-->
+							<div id="businessworker" class="tab-pane fade">
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> BusinessWorker服务名称：</label>
+									<div class="col-sm-9">
+										<input type="text" name="config[businessworker][name]" value="{$workerman.businessworker.name}" class="col-xs-3" style="margin-right: 5px;width: 220px;"/>
+										<span class="help-inline col-xs-5">
+											<span class="lbl"> BusinessWorker在后台服务名称</span>
+										</span>
+									</div>
+								</div>					
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> BusinessWorker进程数量：</label>
+									<div class="col-sm-9">
+										<input type="number" name="config[businessworker][process]" value="{$workerman.businessworker.process}" max="16" class="col-sm-1" />
+										<span class="help-inline col-xs-5">
+											<span class="lbl"> 按CPU核心数分配，多少核心就配置多少进程数</span>
+										</span>
+									</div>
+								</div>					
+							</div>
+							<!--Gateway设置-->
+							<div id="gateway" class="tab-pane fade">
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Gateway服务名称：</label>
+									<div class="col-sm-9">
+										<input type="text" name="config[gateway][name]" value="{$workerman.gateway.name}" class="col-xs-3" style="margin-right: 5px;width: 220px;"/>
+										<span class="help-inline col-xs-5">
+											<span class="lbl"> Gateway在后台服务名称</span>
+										</span>
+									</div>
+								</div>					
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Gateway协议IP:端口：</label>
+									<div class="col-sm-9">
+										<select name="config[gateway][protocol]" class="col-xs-2" style="width: 100px;height: 33px;margin-right: 5px;" required>
+											<option value="HTTP" {if condition="$workerman.gateway.protocol eq 'HTTP'"}selected="selected"{/if}>HTTP</option>
+											<option value="websocket" {if condition="$workerman.gateway.protocol eq 'websocket'"}selected="selected"{/if}>websocket</option>
+											<option value="text" {if condition="$workerman.gateway.protocol eq 'text'"}selected="selected"{/if}>text</option>
+											<option value="frame" {if condition="$workerman.gateway.protocol eq 'frame'"}selected="selected"{/if}>frame</option>
+											<option value="ws" {if condition="$workerman.gateway.protocol eq 'ws'"}selected="selected"{/if}>ws</option>
+											<option value="tcp" {if condition="$workerman.gateway.protocol eq 'tcp'"}selected="selected"{/if}>tcp</option>
+										</select>
+										<input type="text" name="config[gateway][ip]" value="{$workerman.gateway.ip}" class="col-sm-2" style="margin-right: 5px;width: 120px;"/>
+										<input type="number" name="config[gateway][port]" value="{$workerman.gateway.port}" class="col-sm-1" />
+										<span class="help-inline col-xs-5">
+											<span class="lbl"> 端口(1-65535)，请避开常规端口</span>
+										</span>
+									</div>
+								</div>					
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 本机IP：</label>
+									<div class="col-sm-9">
+										<input type="text" name="config[gateway][lanip]" value="{$workerman.gateway.lanip}" class="col-sm-2" style="margin-right: 5px;width: 120px;"/>
+										<span class="help-inline col-xs-5">
+											<span class="lbl"> 分布式部署时使用内网ip</span>
+										</span>
+									</div>
+								</div>					
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Gateway进程数量：</label>
+									<div class="col-sm-9">
+										<input type="number" name="config[gateway][process]" value="{$workerman.gateway.process}" class="col-sm-1" />
+										<span class="help-inline col-xs-5">
+											<span class="lbl"> 按CPU核心数分配，多少核心就配置多少进程数</span>
+										</span>
+									</div>
+								</div>					
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 内部通讯起始端口：</label>
+									<div class="col-sm-9">
+										<input type="number" name="config[gateway][startport]" value="{$workerman.gateway.startport}" class="col-sm-1" />
+										<span class="help-inline col-xs-5">
+											<span class="lbl"> 端口(1-65535)，请避开常规端口</span>
+										</span>
+									</div>
+								</div>					
+							</div>
+						</div>
+						
+						<div class="clearfix form-actions">
+							<div class="col-sm-offset-4 col-sm-8">
+								<button class="btn btn-info" type="submit">
+									<i class="ace-icon fa fa-check bigger-110"></i>
+									保存
+								</button>
+	
+								&nbsp; &nbsp; &nbsp;
+								<button class="btn" type="reset">
+									<i class="ace-icon fa fa-undo bigger-110"></i>
+									重置
+								</button>
+							</div>
+						</div>
+						
+					<fieldset>
+
+				</form>
+			</div>
+		</div>
+	</div><!-- /.page-content -->
+	<script type="text/javascript">
+		//从n到m随机数
+		function rnd(n, m){
+			var random = Math.floor(Math.random()*(m-n+1)+n);
+			return random;
+		}
+
+	</script>
+{/block}
+
+

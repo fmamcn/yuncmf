@@ -1,0 +1,35 @@
+<link href="{$theme_path}public/css/main.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="{$theme_path}public/js/koala.min.1.5.js"></script>
+<script type="text/javascript" src="{$theme_path}public/js/hdma.js"></script>
+<script type="text/javascript" src="{$theme_path}public/js/jquery-1.4.2.min.js"></script>
+<script type="text/javascript" src="{$theme_path}public/js/ddsmoothmenu.js"></script>
+<script src="__PUBLIC__/common-js/jquery-2.2.4.min.js"></script>
+<script src="__PUBLIC__/common-js/bootstrap.min.js"></script>
+<script src="__PUBLIC__/common-js/maxlength.js"></script>
+<script src="__PUBLIC__/common-js/jquery.form.js"></script>
+<script type="text/javascript">
+	ddsmoothmenu.init({
+		mainmenuid: "smoothmenu1", //menu DIV id
+		orientation: 'h', //Horizontal or vertical menu: Set to "h" or "v"
+		classname: 'navc'
+	});
+</script>
+<script type="text/javascript" src="{$theme_path}public/js/Lunbo.js" ></script>
+<!--展示列表配置-->
+{php}
+	//水务要闻
+	$news="2";
+	//政策解读
+	$decode="37";
+	//公告公示
+	$notice="11";
+	//水务专辑
+	$album="5";
+	//底部菜单导航
+	$menubot="0";
+{/php}
+<style type="text/css">
+	.pagination p{
+		margin-top: 5px !important;
+	}
+</style>

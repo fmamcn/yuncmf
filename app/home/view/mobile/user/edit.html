@@ -1,0 +1,113 @@
+<!DOCTYPE html >
+<html>
+<head>
+	{include file="public:config"/}
+	<meta name="Generator" content="{$site_seo_title}" />
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width">
+	<title>{:lang('modify information')} {$site_name}</title>
+	<meta http-equiv="keywords" content="{$site_seo_keywords}" />
+	<meta name="description" content="{$site_seo_description}" />
+	<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+	<link rel="stylesheet" type="text/css" href="{$theme_path}public/css/public.css"/>
+	<link rel="stylesheet" type="text/css" href="{$theme_path}public/css/login.css"/>
+	<script type="text/javascript" src="{$theme_path}public/js/jquery.js"></script>
+</head>
+<body>
+	<header class="header" style="height: 35px;">
+		<div class="h-mid" style="width: 100%;height: 35px;line-height: 35px;">
+		{:lang('modify information')}
+		</div>
+	</header>
+	<div class="denglu">
+		<form id="login" action="{:url('home/Center/runedit')}" method="post">
+			<div class="Login">
+				<dl>
+					<dt>您的会员ID</dt>
+					<dd style="font-style: italic;">
+						<span style="color: #f00;">VIP</span>{$member_id}
+					</dd>
+				</dl>
+
+				<dl>
+					<dt>{:lang('nickname')}</dt>
+					<dd>
+						<input type="text" id="input-user_nicename" name="member_nickname" placeholder="{:lang('nickname')}" class="form-control" maxlength="16" value="{$member_nickname|default=$member_username}">
+					</dd>
+				</dl>
+
+				<dl>
+					<dt>{:lang('sex')}</dt>
+					{php}
+						$sexs=array("1"=>lang('ProMonkey'),"2"=>lang('ProMM'),"3"=>lang('secrecy'));
+					{/php}
+					<dd>
+						<select id="input-sex" name="member_sex" class="form-control">
+							{foreach name="sexs" item="vo"}
+								{php}$sexselected=$key==$member_sex?"selected":"";{/php}
+								<option value="{$key}" {$sexselected}>{$vo}</option>
+							{/foreach}
+						</select>
+					</dd>
+				</dl>
+
+				<dl>
+					<dt>{:lang('phone')}</dt>
+					<dd>
+						<input type="text" id="member_tel" name="member_tel" class="form-control" value="{$member_tel}">
+					</dd>
+				</dl>
+
+				<dl>
+					<dt>{:lang('province')}</dt>
+					<dd>
+						<select name="member_province" class="form-control" id="province" onChange="loadRegion('province',2,'city','{:url('admin/Ajax/getRegion')}');">
+							<option value="0">{:lang('province')}</option>
+							{volist name="province" id="vo"}
+							<option value="{$vo.id}" {if condition="$member_province eq $vo['id']"}selected{/if}>{$vo.name}</option>
+							{/volist}
+						</select>
+					</dd>
+				</dl>
+
+				<dl>
+					<dt>{:lang('city')}</dt>
+						<select name="member_city" class="form-control" id="city" onchange="loadRegion('city',3,'town','{:url('admin/Ajax/getRegion')}');">
+							<option  value="0">{:lang('city')}</option>
+							{foreach name="city" item="v"}
+							<option {if condition="$member_city eq $v['id']"}selected{/if} value="{$v.id}">{$v.name}</option>
+							{/foreach}
+						</select>
+					</dd>
+				</dl>
+
+				<dl>
+					<dt>{:lang('town')}</dt>
+						<select name="member_town" class="form-control" id="town">
+							<option value="0">{:lang('town')}</option>
+							{volist name="town" id="vy"}
+							<option {if condition="$member_town eq $vy['id']"}selected{/if} value="{$vy.id}">{$vy.name}</option>
+							{/volist}
+						</select>
+					</dd>
+				</dl>
+
+				<dl>
+					<dt>{:lang('signature')}</dt>
+					<dd style="height: 100px;">
+						<textarea id="input-signature" name="signature" placeholder="{:lang('signature')}" class="form-control" style="width: 95%;height: 95%;">{$signature}</textarea>
+					</dd>
+				</dl>
+
+				<div class="field submit-btn">
+					<button class="btn_big1">{:lang('save')}</button>
+				</div>
+
+
+			</div>
+		</form>
+	</div>
+{include file="public:footer_nav"/}
+<script type="text/javascript" src="__PUBLIC__/others/region.js"></script>
+</body>
+</html>

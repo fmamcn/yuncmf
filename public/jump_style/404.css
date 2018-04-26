@@ -1,0 +1,30 @@
+@charset "utf-8";
+body{
+	background:#e3e2e7
+}
+.errors{
+	margin:70px;
+}
+.errors .text{
+	padding:14px;
+	text-align: center;
+}
+.errors .text h4{
+	color:#e54919;
+	font:24px "微软雅黑","宋体";
+	font-weight:700;
+	padding-bottom:8px
+}
+.errors .text p{
+	font-size: 16px;
+	line-height:22px;
+}
+.errors .text p span{
+	color:#e54919;
+	font-weight:700;
+	cursor:pointer;
+	padding:0 5px
+}
+.errors .text p #downTime{
+	cursor:default
+}

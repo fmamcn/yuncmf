@@ -1,0 +1,998 @@
+{extend name="admin@public/base" /}
+{block name="main-content"}
+	<!--产品管理-修改产品-->
+	<div class="breadcrumbs-fixed" style="margin-left: 190px;background: #FFFFFF;">
+		<!--当前操作-->
+		<div class="nav-wrap-up pos-rel">
+			<div class="nav-wrap">
+				{if condition="($id_curr neq '') AND (!empty($menus_child))"}
+					<ul class="nav nav-list">
+						{foreach name="menus_child" item="k"}
+						<li>
+							<a href="{:url(''.$k['name'].'')}">
+							<o class="font12 {if condition="$id_curr eq $k['id']"}rigbg{/if}">{$k.title}</o>
+							</a>
+							<b class="arrow"></b>
+						</li>
+						{/foreach}
+					</ul>
+				{else /}
+					<div class="nav nav-list doingfixed">
+						<h4 style="margin-left: 15px;">
+							您当前操作
+							<small>
+								<i class="ace-icon fa fa-angle-double-right bigger-110"></i>修改产品
+							</small>
+							<a href="{:url('admin/Product/product_list')}" class="btn btn-white btn-round btn-xs" style="float: right;margin-right: 15px;">
+								<i class="ace-icon fa fa-reply"></i>
+								返回
+							</a>
+						</h4>
+						<b class="arrow"></b>
+					</div>
+				{/if}
+			</div>
+		</div><!-- /.nav-list -->
+	</div>
+	<div class="page-content">
+		<!--操作提示-->
+		<a class="btn btn-link pull-right" onclick="showtips();" style="z-index: 999;display: none;" id="lightbulb">
+			<i class="ace-icon fa fa-lightbulb-o"></i>
+		</a>
+		<div class="alert alert-info alert-fixed" id="tips">
+			<button class="close" onclick="hidetips();">
+				<i class="ace-icon fa fa-times"></i>
+			</button>
+			<div class="title">
+				<i class="fa fa-lightbulb-o"></i>
+				<h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+			</div>
+			<ul>
+				<li>请仔细填写产品信息!</li>
+			</ul>
+		</div>
+		<script type="text/javascript">
+			function showtips(){
+				$("#tips").show();
+				$("#lightbulb").hide();
+			}
+			function hidetips(){
+				$("#tips").hide();
+				$("#lightbulb").show();
+			}
+			setTimeout(function(){$("#tips").hide();$("#lightbulb").show();}, 10000);
+		</script>
+		<!--主体-->
+		<div class="row">
+			<div class="tabbable">
+				<ul class="nav nav-tabs" id="myTab">
+					<li class="active">
+						<a data-toggle="tab" href="#basic">基本设置</a>
+					</li>
+
+					<li>
+						<a data-toggle="tab" href="#tabintro">产品详情</a>
+					</li>
+
+					<li>
+						<a data-toggle="tab" href="#tabparts">产品配件</a>
+					</li>
+
+					<li>
+						<a data-toggle="tab" href="#tabspecs">规格与价格</a>
+					</li>
+
+					<li>
+						<a data-toggle="tab" href="#tabothers">其他参数</a>
+					</li>
+
+				</ul>
+				<form class="form-horizontal ajaxForm2" name="form0" method="post" action="{:url('admin/Product/product_runedit')}" enctype="multipart/form-data">
+					<input type="hidden" name="n_id" id="n_id" value="{$product.n_id}" />
+					<fieldset>
+						<!--选项卡开始-->
+						<div class="tab-content">
+							<div id="basic" class="tab-pane fade in active">
+								<script src="__PUBLIC__/common-js/region.js"></script>
+								
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 所属分类： </label>
+									<!--大类-->
+									<div class="col-sm-3">
+										<select name="classify" id="classify" class="col-sm-12 selector" onChange="loadRegion('classify',2,'classify2nd','{:url('admin/Ajax/getProduct_classify')}');" required>
+											<option value="">请选择</option>
+											{foreach name="classify" item="vc"}
+												<option value="{$vc.id}" {if condition="$vc.id eq $c_id"} selected {/if}>{$vc.name}</option>
+											{/foreach}
+										</select>
+									</div>
+									<!--二级分类-->
+									<div class="col-sm-3">
+										<select name="classify2nd" id="classify2nd" class="col-sm-12 selector" onChange="loadRegion('classify2nd',3,'classify3rd','{:url('admin/Ajax/getProduct_classify')}');" required>
+											{foreach name="classify2nd" item="vd"}
+												<option value="{$vd.id}" {if condition="$vd.id eq $nd_id"} selected {/if}>{$vd.name}</option>
+											{/foreach}
+										</select>
+									</div>
+									<!--三级分类-->
+									<div class="col-sm-3">
+										<select name="classify3rd" id="classify3rd" class="col-sm-12 selector" required>
+											{foreach name="classify3rd" item="ve"}
+												<option value="{$ve.id}" {if condition="$ve.id eq $rd_id"} selected {/if}>{$ve.name}</option>
+											{/foreach}
+										</select>
+									</div>
+								</div>
+								<div class="space-4"></div>
+								
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 所属品牌： </label>
+									<div class="col-sm-10">
+										<select name="brandid" class="col-sm-3 selector" required>
+											<option value="">请选择所属品牌</option>
+											{foreach name="brand" item="vb"}
+												<option value="{$vb.classify_id}" {if condition="$vb.classify_id eq $brand_id"} selected {/if}>{$vb.classify_name}</option>
+											{/foreach}
+										</select>
+									</div>
+								</div>
+								<div class="space-4"></div>
+								
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 标题： </label>
+									<div class="col-sm-10">
+										<input type="text" name="title" id="title" value="{$product.title}" class="col-xs-10 col-sm-6" required/>
+									</div>
+								</div>
+								<div class="space-4"></div>	
+								
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 副标题： </label>
+									<div class="col-sm-10">
+										<input type="text" name="subtitle" id="subtitle" value="{$product.subtitle}" class="col-xs-10 col-sm-6"/>
+									</div>
+								</div>
+								<div class="space-4"></div>	
+			
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 关键字： </label>
+									<div class="col-sm-10">
+										<input type="text" name="key" id="key" value="{$product.key}" class="col-xs-10 col-sm-6" />
+									</div>
+								</div>
+								<div class="space-4"></div>
+								
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 标签： </label>
+									<div class="checkbox">
+										{foreach name='flag' item='flag'}
+											<label id="flag_{$flag.flag_id}">
+												<input {if condition="strstr($product['flag'],$flag['flag_name']) eq true"}checked{/if} class="ace ace-checkbox-2" name="flag[]" type="checkbox" id="flag_va{$flag.flag_id}" value="{$flag.flag_name}" />
+												<span class="lbl"> {$flag.flag_name}</span>
+											</label>
+										{/foreach}
+									</div>
+								</div>
+								<div class="space-4"></div>
+			
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 来源： </label>
+									<div class="col-sm-10">
+										<input type="text" name="source" id="news_source" value="{$product.source}" class="col-xs-10 col-sm-2" />
+										<label class="input_last">
+											常用：
+											{volist name="source" id="k"}
+												<a class="btn btn-minier btn-yellow" href="javascript:;" onclick="return souadd('{$k.source_name}');" >{$k.source_name}</a>&nbsp;
+											{/volist}
+										</label>
+									</div>
+								</div>
+								<div class="space-4"></div>
+			
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 封面图片： </label>
+									<div class="col-sm-10">
+										<div class="col-xs-12 col-sm-12" id="pic_w_h_view">
+											<div class="pic_w_view" id="pic_w_view">
+												<!-- 横屏图片预览 -->
+												<img src="{$product.img_w|get_imgurl=3}" width="296" height="176" id="img0" title="横屏图片" >
+											</div>
+											<div class="pic_h_view" id="pic_h_view">
+												<!-- 竖屏图片预览 -->
+												<img src="{$product.img|get_imgurl=3}" width="204" height="217" id="img0" title="竖屏图片" >
+											</div>
+										</div>
+										<span class="btn btn-sm btn-success" id="add_pic_one">
+											<i class="ace-icon fa fa-plus bigger-110"></i>
+											更改图片
+										</span>
+										<label class="col-xs-12 col-sm-12 red">【请选择两张图片做预览图，系统会自动识别图片是横屏还是竖屏，默认横屏尺寸比例为300*180，竖屏比例为415*442】</label>
+										<br />
+										<input type="hidden" name="pic_w" id="file0" value="{$product.img_w}" style= />
+										<input type="hidden" name="pic_h" id="file1" value="{$product.img}" style= />
+									</div>
+								</div>
+								<div class="space-4"></div>
+			
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 摘要： </label>
+									<div class="col-sm-9">
+										<textarea name="scontent" maxlength="100" cols="20" rows="2" class="col-xs-10 col-sm-10 limited" id="form-field-10">{$product.scontent}</textarea>
+										<input type="hidden" name="maxlength" value="100" />
+										<span class="help-inline col-xs-2 col-sm-2">
+											还可以输入<span class="middle charsLeft"></span> 个字符
+										</span>
+									</div>
+								</div>
+								<div class="space-4"></div>
+			
+							</div>
+							
+							<!--产品详情-->
+							<div id="tabintro" class="tab-pane fade">
+			
+								<div class="form-group">
+									<label class="col-sm-1 control-label no-padding-right" for="form-field-1"> 产品详情： </label>
+									<div class="col-sm-11">
+										<textarea name="intro" rows="100%" style="width:95%;height: 600px" id="intro">{$product.intro}</textarea>
+									</div>
+								</div>
+								<div class="space-4"></div>
+								
+							</div>
+							
+							<!--产品配件-->
+							<div id="tabparts" class="tab-pane fade">
+			
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 配件分类： </label>
+									<div class="checkbox col-sm-10">
+										<div class="col-sm-3">
+											<select id="classify_part" class="col-sm-12 selector" onChange="loadRegion('classify_part',2,'classify2nd_part','{:url('admin/Ajax/getProduct_classify')}');">
+												<option value="">请选择</option>
+												{foreach name="classify" item="vc"}
+													<option value="{$vc.id}">{$vc.name}</option>
+												{/foreach}
+											</select>
+										</div>
+										<!--二级分类-->
+										<div class="col-sm-3">
+											<select id="classify2nd_part" class="col-sm-12 selector" onChange="loadRegion('classify2nd_part',3,'classify3rd_part','{:url('admin/Ajax/getProduct_classify')}');">
+												<option value="">请选择</option>
+											</select>
+										</div>
+										<!--三级分类-->
+										<div class="col-sm-3">
+											<select id="classify3rd_part" class="col-sm-12 selector" onchange="loadParts(this.value);">
+												<option value="">请选择</option>
+											</select>
+										</div>
+									</div>
+								</div>
+								<div class="space-4"></div>
+			
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> </label>
+									<div class="checkbox col-sm-8" id="parts_data">
+										<!--配件数据由JS脚本loadParts提供-->
+										{foreach name='parts' item='parts'}
+											<label id="isparts_{$parts.n_id}" class="col-xs-4 col-sm-3">
+												<input checked class="ace ace-checkbox-2" name="parts[]" type="checkbox" id="isparts_va{$parts.n_id}" value="{$parts.n_id}" />
+												<div class="lbl thumbnail search-thumbnail fixedtitle">
+													<img class="media-object" style="height: 90px; width: 150px; display: block;" src="{$parts.img_w}" data-holder-rendered="true">
+													<span class="blue bolder fixedtitle">{$parts.title}{$product.parts[0]}</span>
+												</div>
+												<div class="space-4"></div>
+											</label>
+										{/foreach}
+									</div>
+								</div>
+								<div class="space-4"></div>
+			
+							</div>
+			
+							<!--规格与价格-->
+							<div id="tabspecs" class="tab-pane fade">
+			
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 重量： </label>
+									<div class="col-sm-10">
+										<input type="text" name="weight" class="col-xs-10 col-sm-2" value="{$product.weight}" />
+									</div>
+								</div>
+								<div class="space-4"></div>
+			
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 进货价： </label>
+									<div class="col-sm-10">
+										<input type="text" name="offerprice" class="col-xs-10 col-sm-2" value="{$product.offerprice}" />
+									</div>
+								</div>
+								<div class="space-4"></div>
+			
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 市场价： </label>
+									<div class="col-sm-10">
+										<input type="text" name="mprice" class="col-xs-10 col-sm-2" value="{$product.mprice}" />
+									</div>
+								</div>
+								<div class="space-4"></div>
+			
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 代理价格： </label>
+									<div class="col-sm-10">
+										<input type="text" name="cpprice" class="col-xs-10 col-sm-2" value="{$product.cpprice}" />
+									</div>
+								</div>
+								<div class="space-4"></div>
+			
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 颜色规格： </label>
+									<div class="col-sm-10">
+										<div class="radio" >
+											<span class="btn btn-sm btn-info" id="view_pic_all">
+												<i class="ace-icon fa fa-eye bigger-110"></i>
+												查看颜色规格
+											</span>
+											<input type="hidden" name="pic_all" id="upload_pic_all" value="{$pic_list}" />
+											<input type="hidden" name="pic_content" id="pic_content" value="{$pic_content_list}" />
+											<input type="hidden" id="pic_on" value="" />
+										</div>
+									</div>
+								</div>
+								<div class="space-4"></div>
+			
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 尺寸与价格： </label>
+									<div class="col-sm-10">
+										<div class="radio" >
+											<span class="btn btn-sm btn-info" id="view_product_size">
+												<i class="ace-icon fa fa-eye bigger-110"></i>
+												查看尺寸与价格
+											</span>
+											<input type="hidden" name="produce_size" id="produce_size" value="{$size_list}" />
+											<input type="hidden" name="produce_price" id="produce_price" value="{$price_content_list}" />
+										</div>
+									</div>
+								</div>
+								<div class="space-4"></div>
+			
+							</div>
+			
+							<!--其他参数-->
+							<div id="tabothers" class="tab-pane fade">
+			
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 点击率： </label>
+									<div class="col-sm-10">
+										<input type="number" name="hits" value="{$product.hits}" class="col-xs-10 col-sm-1" />
+									</div>
+								</div>
+								<div class="space-4"></div>
+			
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 购买量： </label>
+									<div class="col-sm-10">
+										<input type="number" name="bypay" value="{$product.bypay}" class="col-xs-10 col-sm-1" />
+									</div>
+								</div>
+								<div class="space-4"></div>
+								
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 开启评论： </label>
+									<div class="col-sm-10" style="padding-top:5px;">
+										<input name="comment_status" id="comment_status" {if condition="$product.comment_status eq 1"}checked{/if} value="1" class="ace ace-switch ace-switch-5 btn-flat" type="checkbox" />
+										<span class="lbl">&nbsp;&nbsp;默认开启</span>
+									</div>
+								</div>
+								<div class="space-4"></div>
+			
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 是否配件： </label>
+									<div class="col-sm-10" style="padding-top:5px;">
+										<input name="isparts" id="isparts" {if condition="$product.isparts eq 1"}checked{/if} value="1" class="ace ace-switch ace-switch-5 btn-flat" type="checkbox" />
+										<span class="lbl">&nbsp;&nbsp;开启则表明这个是某个产品的配件</span>
+									</div>
+								</div>
+								<div class="space-4"></div>
+			
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 是否包邮： </label>
+									<div class="col-sm-10">
+										<select name="isfreeship" class="col-sm-3 selector" onchange="change_ship(this.value)" style="height: 34px;">
+											<option value="">请选择包邮规则</option>
+												<option value="0" {if condition="$product.isfreeship eq 0"} selected {/if}>0.不包邮</option>
+												<option value="1" {if condition="$product.isfreeship eq 1"} selected {/if}>1.包邮</option>
+												<option value="2" {if condition="$product.isfreeship eq 2"} selected {/if}>2.条件包邮</option>
+										</select>
+										<input type="number" name="freeshipcon" placeholder="请输入包邮数量" id="freeshipcon" style="display: none;margin-left: 15px;" />
+									</div>
+								</div>
+								<div class="space-4"></div>
+								
+								<div class="form-group">
+									<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> 促销规则： </label>
+									<div class="col-sm-10">
+										<select name="promotion_type" class="col-sm-3 selector" onchange="change_pro(this.value)" style="height: 34px;">
+											<option value="">请选择促销规则</option>
+												<option value="0" {if condition="$product.promotion_type eq 0"} selected {/if}>0.不是促销件</option>
+												<option value="1" {if condition="$product.promotion_type eq 1"} selected {/if}>1.满送</option>
+												<option value="2" {if condition="$product.promotion_type eq 2"} selected {/if}>2.优惠套装</option>
+										</select>
+										<input type="number" name="promotion_free" placeholder="请输入满送条件" id="promotion_free" style="display: none;margin-left: 15px;" />
+										<input type="number" name="promotion_rebate" placeholder="请输入折扣率" id="promotion_rebate" style="display: none;margin-left: 15px;" />
+									</div>
+								</div>
+								<div class="space-4"></div>
+								
+							</div>
+						</div>
+						<!--选项卡结束-->
+						
+						<div class="clearfix form-actions">
+							<div class="col-md-offset-4 col-md-8 col-sm-offset-4 col-sm-8">
+								<button class="btn btn-info" type="submit">
+									<i class="ace-icon fa fa-check bigger-110"></i>
+									保存
+								</button>
+	
+								&nbsp; &nbsp; &nbsp;
+								<button class="btn" type="reset">
+									<i class="ace-icon fa fa-undo bigger-110"></i>
+									重置
+								</button>
+							</div>
+						</div>
+						
+					
+					</fieldset>
+				</form>
+			</div>
+		</div>
+
+		<!-- 多图列表模态框（Modal） -->
+		<div class="modal fade in" id="pic_all_modal" tabindex="-2" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="form-horizontal ajaxForm2" name="pic_all_modal">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" id="close_pic_all" data-dismiss="modal" aria-hidden="true">×</button>
+							<h4 class="modal-title" id="myModalLabel">
+								管理颜色
+							</h4>
+						</div>
+						<div class="modal-body">
+
+							<div class="row">
+								<div class="col-xs-12">
+
+									<table class="table table-striped table-bordered table-hover" id="dynamic-table">
+										<thead>
+										<tr>
+											<th class="center" style="width: 8%;">序号</th>
+											<th class="center" style="width: 20%;">图片文件名</th>
+											<th class="center" style="width: 20%;">图片预览</th>
+											<th class="center" style="width: 42%;">颜色说明</th>
+											<th class="center" style="border-right:#CCC solid 1px;width: 10%;">操作</th>
+										</tr>
+										</thead>
+										<tbody id="upload_pic_all_view">
+											<!-- 此处内容由_beforeInsertImage生成 -->
+										</tbody>
+									</table>
+
+								</div>
+							</div>
+
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-sm btn-success" id="add_pic_all">
+								<i class="ace-icon fa fa-plus bigger-110" id="add_pic_all"></i>
+								添加颜色图片
+							</button>
+							<button type="button" class="btn btn-sm btn-primary" id="save_pic_all" data-dismiss="modal" >
+								<i class="ace-icon fa fa-save bigger-110"></i>
+								保存
+							</button>
+						</div>
+					</div><!-- /.modal-content -->
+				</div><!-- /.modal-dialog -->
+			</div>
+		</div><!-- /.modal -->
+
+		<!-- 尺寸模态框（Modal） -->
+		<div class="modal fade in" id="product_size_modal" tabindex="-2" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="form-horizontal ajaxForm2" name="product_size_modal">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" id="close_product_size" data-dismiss="modal" aria-hidden="true">×</button>
+							<h4 class="modal-title" id="myModalLabel">
+								管理规格与价格
+							</h4>
+						</div>
+						<div class="modal-body">
+
+							<div class="row">
+								<div class="col-xs-12">
+
+									<table class="table table-striped table-bordered table-hover" id="dynamic-table">
+										<thead>
+										<tr>
+											<th class="center" style="width: 15%;">序号</th>
+											<th class="center" style="width: 50%;">规格</th>
+											<th class="center" style="width: 20%;">价格（元）</th>
+											<th class="center" style="border-right:#CCC solid 1px;width: 15%;">操作</th>
+										</tr>
+										</thead>
+										<tbody id="upload_product_size">
+											<!-- 此处内容由js生成 -->
+										</tbody>
+									</table>
+
+								</div>
+							</div>
+
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-sm btn-success" id="add_product_size">
+								<i class="ace-icon fa fa-plus bigger-110" id="add_product_size"></i>
+								添加规格
+							</button>
+							<button type="button" class="btn btn-sm btn-primary" id="save_product_size" data-dismiss="modal" >
+								<i class="ace-icon fa fa-save bigger-110"></i>
+								保存
+							</button>
+						</div>
+					</div><!-- /.modal-content -->
+				</div><!-- /.modal-dialog -->
+			</div>
+		</div><!-- /.modal -->
+
+
+	</div><!-- /.page-content -->
+{/block}
+{block name="scripts"}
+	<script src="__PUBLIC__/ueditor/ueditor.config.js" type="text/javascript"></script>
+	<script src="__PUBLIC__/ueditor/ueditor.all.min.js" type="text/javascript"></script>
+	<!--获取零件数据-->
+	<script type="text/javascript">
+		function loadParts(id){
+			var siteurl=window.location.host;
+			var parturl='http://'+siteurl+'/admin/Product/parts';
+	    	var imageHtml = '';
+	    	$.ajax({
+	    		url:parturl,
+	    		type:'post',
+	    		dataType:'json',
+	    		data:{classify3rd:id},
+	    		success:function(partres){
+	    			if (partres.total != 0) {
+	    				for(var i in partres){
+	    					imageHtml +='<label id="isparts_'+partres[i].n_id+'" class="col-xs-4 col-sm-3"><input class="ace ace-checkbox-2" name="parts[]" type="checkbox" id="isparts_va'+partres[i].n_id+'" value="'+partres[i].n_id+'" /><div class="lbl thumbnail search-thumbnail fixedtitle"><img class="media-object" style="height: 90px; width: 150px; display: block;" src="'+partres[i].img_w+'" data-holder-rendered="true"><span class="blue bolder fixedtitle">'+partres[i].title+'</span></div><div class="space-4"></div></label>'
+	    				}
+	            		document.getElementById('parts_data').innerHTML = imageHtml;
+	          		}else{
+	            		document.getElementById('parts_data').innerHTML = '没有相应配件';
+	          		}
+	        	}
+	      })
+		}
+	</script>
+	<!--尺寸条件事件-->
+	<script type="text/javascript">
+		//促销条件选择
+		function change_pro(provalue){
+			if(provalue==1){
+				$('#promotion_rebate').hide();
+				$('#promotion_free').show();
+			}else if(provalue==2){
+				$('#promotion_free').hide();
+				$('#promotion_rebate').show();
+			}else{
+				$('#promotion_free').hide();
+				$('#promotion_rebate').hide();
+			}
+		}
+		//包邮条件选择
+		function change_ship(shipvalue){
+			if(shipvalue==2){
+				$('#freeshipcon').show();
+			}else{
+				$('#freeshipcon').hide();
+			}
+		}
+		/* 显示尺寸模态框 */
+		$("#view_product_size").click(function () {
+			// 获取尺寸
+			var sizeall = $("#produce_size").val();
+			var sizedata = sizeall.split(",");
+			//获取价格
+			var priceall = $("#produce_price").val();
+			var pricedata = priceall.split(",");
+			// 清除空值和undefined
+			for (var i = 0; i < sizedata.length; i++) {
+				if (sizedata[i]==""||typeof(sizedata[i])=="undefined") {
+					sizedata.splice(i,1);
+					i=i-1;
+				}
+			}
+			for (var i = 0; i < pricedata.length; i++) {
+				if (pricedata[i]==""||typeof(pricedata[i])=="undefined") {
+					pricedata.splice(i,1);
+					i=i-1;
+				}
+			}
+			var imageHtml = '';
+			for(var i in sizedata){
+				imageHtml += '<tr id="tr'+i+'"><td class="center" id="id'+i+'" style="height: 34px;">'+i+'</td><td class="center" id="size'+i+'"><input class="col-xs-12 col-sm-12" id="size[]" value='+sizedata[i]+' type="text" required ></td><td class="center" id="price'+i+'"><input class="col-xs-12 col-sm-12" id="price[]" type="number" value='+pricedata[i]+' required></td><td class="center" id="do'+i+'"><div class="red" id="del'+i+'"><i class="ace-icon fa fa-trash-o bigger-130"></i></div></td></tr>';
+			}
+			document.getElementById('upload_product_size').innerHTML = imageHtml;
+			$("#product_size_modal").show(300);
+		});
+		//初始化尺寸表格ID值
+		var i=1;
+		/* 添加尺寸价格 */
+		$("#add_product_size").click(function () {
+			//动态增加TR元素
+			var oTr=document.createElement("TR");
+			oTr.id='tr'+i;
+			document.getElementById("upload_product_size").appendChild(oTr);
+			//动态增加TD元素-序号
+			var oTdid=document.createElement("TD");
+			oTdid.style.height="34px";
+			oTdid.className="center";
+			oTdid.id='id'+i;
+			document.getElementById('tr'+i).appendChild(oTdid);
+			document.getElementById('id'+i).innerHTML = i;
+			//动态增加TD元素-尺寸规格
+			var oTdsize=document.createElement("TD");
+			oTdsize.className="center";
+			oTdsize.id='size'+i;
+			document.getElementById('tr'+i).appendChild(oTdsize);
+			//动态增加INPUT元素-尺寸规格
+			var oInputsize=document.createElement("INPUT");
+			oInputsize.className="col-xs-12 col-sm-12";
+			oInputsize.id='size[]';
+			oInputsize.type="text";
+			oInputsize.required=true;
+			document.getElementById('size'+i).appendChild(oInputsize);
+			//动态增加TD元素-价格
+			var oTdprice=document.createElement("TD");
+			oTdprice.className="center";
+			oTdprice.id='price'+i;
+			document.getElementById('tr'+i).appendChild(oTdprice);
+			//动态增加INPUT元素-价格
+			var oInputprice=document.createElement("INPUT");
+			oInputprice.className="col-xs-12 col-sm-12";
+			oInputprice.id='price[]';
+			oInputprice.type="number";
+			oInputprice.required=true;
+			document.getElementById('price'+i).appendChild(oInputprice);
+			//动态增加TD元素-操作
+			var oTddo=document.createElement("TD");
+			oTddo.className="center";
+			oTddo.id='do'+i;
+			document.getElementById('tr'+i).appendChild(oTddo);
+			//动态增加DIV元素-删除
+			var oAdel=document.createElement("DIV");
+			oAdel.className="red";
+			oAdel.id='del'+i;
+			oAdel.onclick=function () {
+				var delid=this.id;
+				var trid=delid.replace("del","");
+				var deltr=document.getElementById('tr'+trid);
+				if(deltr){
+					deltr.parentNode.removeChild(deltr);
+				}else{
+					alert('删除失败');
+				}
+			};
+			document.getElementById('do'+i).appendChild(oAdel);
+			//动态增加I元素-删除图标
+			var oIdel=document.createElement("I");
+			oIdel.className="ace-icon fa fa-trash-o bigger-130";
+			document.getElementById('del'+i).appendChild(oIdel);
+			i++;  
+		});
+		
+		/* 关闭尺寸价格 */
+		$("#close_product_size").click(function () {
+			var arrsize=new Array();
+			$('input[id="size[]"]').each(function(i){
+				arrsize[i]=$(this).val();
+			});
+			$("#produce_size").val(arrsize);
+			var arrprice=new Array();
+			$('input[id="price[]"]').each(function(i){
+				arrprice[i]=$(this).val();
+			});
+			$("#produce_size").val(arrsize);
+			$("#produce_price").val(arrprice);
+			$("#product_size_modal").hide(200);
+		});
+
+		/* 保存 尺寸价格 */
+		$("#save_product_size").click(function () {
+			var arrsize=new Array();
+			$('input[id="size[]"]').each(function(i){
+				arrsize[i]=$(this).val();
+			});
+			$("#produce_size").val(arrsize);
+			var arrprice=new Array();
+			$('input[id="price[]"]').each(function(i){
+				arrprice[i]=$(this).val();
+			});
+			$("#produce_size").val(arrsize);
+			$("#produce_price").val(arrprice);
+			$("#product_size_modal").hide(200);
+		});
+
+	</script>
+	<!--单图和多图事件-->
+	<script type="text/javascript">
+		// 产品详情ueditor初始化
+		var ueintro = new UE.ui.Editor();
+		ueintro.render("intro");
+		// 实例化图片上传编辑器，这里注意配置项隐藏编辑器并禁用默认的基础功能。
+		var upload_pic_all = UE.getEditor("upload_pic_all", {
+			isShow: false,
+			focus: false,
+			enableAutoSave: false,
+			autoSyncData: false,
+			autoFloatEnabled:false,
+			wordCount: false,
+			sourceEditor: null,
+			scaleEnabled:true,
+			toolbars: [["insertimage","attachment"]]
+		});
+		// 监听多图上传的插入动作
+		upload_pic_all.ready(function () {
+			upload_pic_all.addListener("beforeInsertImage", _beforeInsertImage);
+			upload_pic_all.addListener("afterinsertfile", _afterinsertfile);
+		});
+		// 触发多图上传对话框
+		$("#add_pic_all").click(function () {
+//			$("#pic_all_modal").hide(200);
+			var dialog = upload_pic_all.getDialog("insertimage");
+			dialog.title = '多图上传';
+			dialog.render();
+			dialog.open();
+		});
+		// 触发封面图片对话框
+		$("#add_pic_one").click(function () {
+			var dialog = upload_pic_all.getDialog('attachment');
+			dialog.title = '选择封面图片';
+			dialog.render();
+			dialog.open();
+		});
+		// 单图监听动作
+		function _afterinsertfile(t,result){
+			//判断第一张图横竖类型
+			var firstimage = new Image();
+			firstimage.src=result[0].url;
+			firstimage.onload = function(){
+				var firstWidth=firstimage.naturalWidth;
+				var firstHeight=firstimage.naturalHeight;
+				if (firstWidth>firstHeight) {
+					var whtml='<img src="'+result[0].url+'" width="296" height="176" id="img0" title="横屏图片" >';
+					document.getElementById('pic_w_view').innerHTML = whtml;
+					$("#file0").val(result[0].url);
+				} else{
+					var hhtml='<img src="'+result[0].url+'" width="204" height="217" id="img0" title="竖屏图片" >';
+					document.getElementById('pic_h_view').innerHTML = hhtml;
+					$("#file1").val(result[0].url);
+				}
+			}
+			
+			if(result[1]!=null){
+				//判断第二张图横竖类型
+				var secondimage = new Image();
+				secondimage.src=result[1].url;
+				secondimage.onload = function(){
+					var secondWidth=secondimage.naturalWidth;
+					var secondHeight=secondimage.naturalHeight;
+					if (secondWidth>secondHeight) {
+						var whtml='<img src="'+result[1].url+'" width="296" height="176" id="img0" title="横屏图片" >';
+						document.getElementById('pic_w_view').innerHTML = whtml;
+						$("#file0").val(result[1].url);
+					} else{
+						var hhtml='<img src="'+result[1].url+'" width="204" height="217" id="img0" title="竖屏图片" >';
+						document.getElementById('pic_h_view').innerHTML = hhtml;
+						$("#file1").val(result[1].url);
+					}
+				}
+			}
+			$("#pic_w_h_view").show();
+		}
+		// 多图监听动作
+ 		function _beforeInsertImage(t, result) {
+ 			if ($("#pic_on").val() == 1) {
+ 				var imageHtml = '';
+ 				// 上次图片URL数组
+ 				picall = $("#upload_pic_all").val();
+ 				picall_one = picall.split(",");
+ 				// 上次图片说明数组
+ 				pic_alt = $("#pic_content").val();
+ 				picalt_one = pic_alt.split(",");
+ 				// 新增图片URL数组声明
+				var picall_add = new Array();
+ 				// 新增图片说明数组声明
+				var picalt_add = new Array();
+				// 最终图片URL数组声明
+				var picUrl = new Array();
+				// 最终图片说明数组声明
+				var picAlt = new Array();
+				for(var i in result){
+					picall_add[i] = result[i].src;
+					picalt_add[i] = result[i].alt;
+				}
+				picUrl = picall_one.concat(picall_add);
+				picAlt = picalt_one.concat(picalt_add);
+				// 清除空值和undefined
+				for (var i = 0; i < picUrl.length; i++) {
+					if (picUrl[i]==""||typeof(picUrl[i])=="undefined") {
+						picUrl.splice(i,1);
+						i=i-1;
+					}
+				}
+				for (var i = 0; i < picAlt.length; i++) {
+					if (picAlt[i]==""||typeof(picAlt[i])=="undefined") {
+						picAlt.splice(i,1);
+						i=i-1;
+					}
+				}
+				for(var i in picUrl){
+					var s = parseInt(i)+1;
+					imageHtml += '<tr id="'+s+'"><td height="80" class="center" style="vertical-align: middle;">'+s+'</td><td height="80" class="center" style="vertical-align: middle;">'+picAlt[i]+'</td><td class="center" style="vertical-align: middle;padding: 2px;"><img id="img'+s+'" src="'+picUrl[i]+'" style="max-height:80px;max-width:200px;"/></td><td class="center" style="vertical-align: middle;"><input type="text" id="alt'+s+'" class="col-xs-12 col-sm-12" maxlength="100" value="'+picAlt[i]+'" onblur="changeAlt('+s+')" /></td><td class="center" style="vertical-align: middle;"><div class="action-buttons"><a class="red confirm-rst-url-btn" href="#" onclick="del_pic('+s+')" title="删除"><i class="ace-icon fa fa-trash-o bigger-130"></i></a></div></td></tr>';
+				}
+				document.getElementById('upload_pic_all_view').innerHTML = imageHtml;
+				// 图片说明赋值
+				$("#pic_content").val(picAlt);
+				// 图片URL赋值
+ 				$("#upload_pic_all").val(picUrl);
+			}else{
+				var imageHtml = '';
+				var picUrl = new Array();
+				var picAlt = new Array();
+				for(var i in result){
+					var s = parseInt(i)+1;
+					imageHtml += '<tr id="'+s+'"><td height="80" class="center" style="vertical-align: middle;">'+s+'</td><td height="80" class="center" style="vertical-align: middle;">'+result[i].alt+'</td><td class="center" style="vertical-align: middle;padding: 2px;"><img id="img'+s+'" src="'+result[i].src+'" style="max-height:80px;max-width:200px;"/></td><td class="center" style="vertical-align: middle;"><input type="text" id="alt'+s+'" class="col-xs-12 col-sm-12" maxlength="100" value="'+result[i].alt+'" onblur="changeAlt('+s+')" /></td><td class="center" style="vertical-align: middle;"><div class="action-buttons"><a class="red confirm-rst-url-btn" href="#" onclick="del_pic('+s+')" title="删除"><i class="ace-icon fa fa-trash-o bigger-130"></i></a></div></td></tr>';
+					picUrl[i] =result[i].src;
+					picAlt[i] =result[i].alt;
+				}
+				document.getElementById('upload_pic_all_view').innerHTML = imageHtml;
+				// 图片URL赋值
+				$("#upload_pic_all").val(picUrl);
+				// 图片说明赋值
+				$("#pic_content").val(picAlt);
+				// 为再次添加赋值开关
+				$("#pic_on").val("1");
+			}
+		}
+		// 删除指定元素
+		function del_pic(s){
+			// 删除表格内数据
+			var odiv=document.getElementById(s);
+			odiv.parentNode.removeChild(odiv);
+			// 获取图片URL
+			picall = $("#upload_pic_all").val();
+			picUrl = picall.split(",");
+			// 获取图片说明数组
+			pic_alt = $("#pic_content").val();
+			picAlt = pic_alt.split(",");
+			// 定义数组下标
+			var sdel = parseInt(s)-1;
+			// 删除数组元素，会保留“，”号，需要在后面处理
+			delete picUrl[sdel];
+			delete picAlt[sdel];
+			$("#upload_pic_all").val(picUrl);
+			$("#pic_content").val(picAlt);
+		}
+
+		/* 显示图集模态框 */
+		$("#view_pic_all").click(function () {
+			// 获取图片URL
+			picall = $("#upload_pic_all").val();
+			picUrl = picall.split(",");
+			// 获取图片说明数组
+			pic_alt = $("#pic_content").val();
+			picAlt = pic_alt.split(",");
+			// 清除空值和undefined
+			for (var i = 0; i < picUrl.length; i++) {
+				if (picUrl[i]==""||typeof(picUrl[i])=="undefined") {
+					picUrl.splice(i,1);
+					i=i-1;
+				}
+			}
+			for (var i = 0; i < picAlt.length; i++) {
+				if (picAlt[i]==""||typeof(picAlt[i])=="undefined") {
+					picAlt.splice(i,1);
+					i=i-1;
+				}
+			}
+			var imageHtml = '';
+			for(var i in picUrl){
+				var s = parseInt(i)+1;
+				imageHtml += '<tr id="'+s+'"><td height="80" class="center" style="vertical-align: middle;">'+s+'</td><td height="80" class="center" style="vertical-align: middle;">'+picAlt[i]+'</td><td class="center" style="vertical-align: middle;padding: 2px;"><img id="img'+s+'" src="'+picUrl[i]+'" style="max-height:80px;max-width:200px;"/></td><td class="center" style="vertical-align: middle;"><input type="text" id="alt'+s+'" class="col-xs-12 col-sm-12" maxlength="100" value="'+picAlt[i]+'" onblur="changeAlt('+s+')" /></td><td class="center" style="vertical-align: middle;"><div class="action-buttons"><a class="red confirm-rst-url-btn" href="#" onclick="del_pic('+s+')" title="删除"><i class="ace-icon fa fa-trash-o bigger-130"></i></a></div></td></tr>';
+			}
+			document.getElementById('upload_pic_all_view').innerHTML = imageHtml;
+			$("#pic_content").val(picAlt);
+			$("#upload_pic_all").val(picUrl);
+			$("#pic_all_modal").show(300);
+		});
+		/* 关闭图集按钮动作 */
+		$("#close_pic_all").click(function () {
+			// 获取图片URL
+			picall = $("#upload_pic_all").val();
+			picUrl = picall.split(",");
+			// 获取图片说明数组
+			pic_alt = $("#pic_content").val();
+			picAlt = pic_alt.split(",");
+			// 清除空值和undefined
+			for (var i = 0; i < picUrl.length; i++) {
+				if (picUrl[i]==""||typeof(picUrl[i])=="undefined") {
+					picUrl.splice(i,1);
+					i=i-1;
+				}
+			}
+			for (var i = 0; i < picAlt.length; i++) {
+				if (picAlt[i]==""||typeof(picAlt[i])=="undefined") {
+					picAlt.splice(i,1);
+					i=i-1;
+				}
+			}
+			var imageHtml = '';
+			for(var i in picUrl){
+				var s = parseInt(i)+1;
+				imageHtml += '<tr id="'+s+'"><td height="80" class="center" style="vertical-align: middle;">'+s+'</td><td height="80" class="center" style="vertical-align: middle;">'+picAlt[i]+'</td><td class="center" style="vertical-align: middle;padding: 2px;"><img id="img'+s+'" src="'+picUrl[i]+'" style="max-height:80px;max-width:200px;"/></td><td class="center" style="vertical-align: middle;"><input type="text" id="alt'+s+'" class="col-xs-12 col-sm-12" maxlength="100" value="'+picAlt[i]+'" onblur="changeAlt('+s+')" /></td><td class="center" style="vertical-align: middle;"><div class="action-buttons"><a class="red confirm-rst-url-btn" href="#" onclick="del_pic('+s+')" title="删除"><i class="ace-icon fa fa-trash-o bigger-130"></i></a></div></td></tr>';
+			}
+			document.getElementById('upload_pic_all_view').innerHTML = imageHtml;
+			$("#pic_content").val(picAlt);
+			$("#upload_pic_all").val(picUrl);
+			$("#pic_all_modal").hide(200);
+		});
+
+		/* 保存图集按钮动作 */
+		$("#save_pic_all").click(function () {
+			// 获取图片URL
+			picall = $("#upload_pic_all").val();
+			picUrl = picall.split(",");
+			// 获取图片说明数组
+			pic_alt = $("#pic_content").val();
+			picAlt = pic_alt.split(",");
+			// 清除空值和undefined
+			for (var i = 0; i < picUrl.length; i++) {
+				if (picUrl[i]==""||typeof(picUrl[i])=="undefined") {
+					picUrl.splice(i,1);
+					i=i-1;
+				}
+			}
+			for (var i = 0; i < picAlt.length; i++) {
+				if (picAlt[i]==""||typeof(picAlt[i])=="undefined") {
+					picAlt.splice(i,1);
+					i=i-1;
+				}
+			}
+			var imageHtml = '';
+			for(var i in picUrl){
+				var s = parseInt(i)+1;
+				imageHtml += '<tr id="'+s+'"><td height="80" class="center" style="vertical-align: middle;">'+s+'</td><td height="80" class="center" style="vertical-align: middle;">'+picAlt[i]+'</td><td class="center" style="vertical-align: middle;padding: 2px;"><img id="img'+s+'" src="'+picUrl[i]+'" style="max-height:80px;max-width:200px;"/></td><td class="center" style="vertical-align: middle;"><input type="text" id="alt'+s+'" class="col-xs-12 col-sm-12" maxlength="100" value="'+picAlt[i]+'" onblur="changeAlt('+s+')" /></td><td class="center" style="vertical-align: middle;"><div class="action-buttons"><a class="red confirm-rst-url-btn" href="#" onclick="del_pic('+s+')" title="删除"><i class="ace-icon fa fa-trash-o bigger-130"></i></a></div></td></tr>';
+			}
+			document.getElementById('upload_pic_all_view').innerHTML = imageHtml;
+			$("#pic_content").val(picAlt);
+			$("#upload_pic_all").val(picUrl);
+			$("#pic_all_modal").hide(200);
+		});
+		// 修改图片说明动作
+		function changeAlt(s){
+			// 获取图片说明数组
+			pic_alt = $("#pic_content").val();
+			picAlt = pic_alt.split(",");
+			// 新的图片说明
+			new_alt=$('#alt'+s).val();
+			picAlt[s-1]=new_alt;
+			$("#pic_content").val(picAlt);
+		}
+	</script>
+{/block}

@@ -1,0 +1,125 @@
+{extend name="admin@public/base" /}
+{block name="main-content"}
+	<!--系统参数设置-日志设置页-->
+	<div id="sidebar2" class="sidebar h-sidebar navbar-collapse collapse breadcrumbs-fixed" data-sidebar="true" data-sidebar-scroll="true" data-sidebar-hover="true">
+		<!--当前操作-->
+		<div class="nav-wrap-up pos-rel">
+			<div class="nav-wrap">
+				<ul class="nav nav-list">
+					{foreach name="menus_child" item="k"}
+					<li>
+						<a href="{:url(''.$k['name'].'')}">
+						<o class="font12 {if condition="$id_curr eq $k['id']"}rigbg{/if}">{$k.title}</o>
+						</a>
+						<b class="arrow"></b>
+					</li>
+					{/foreach}
+				</ul>
+			</div>
+		</div><!-- /.nav-list -->
+	</div>
+	<div class="page-content">
+		<!--操作提示-->
+		<a class="btn btn-link pull-right" onclick="showtips();" style="z-index: 999;display: none;" id="lightbulb">
+			<i class="ace-icon fa fa-lightbulb-o"></i>
+		</a>
+		<div class="page-header" style="display: none;" id="currdoing">
+			<h1>
+				您当前操作
+				<small>
+					<i class="ace-icon fa fa-angle-double-right"></i>
+					日志设置
+				</small>
+			</h1>
+		</div>
+		<div class="alert alert-info alert-fixed" id="tips">
+			<button class="close" onclick="hidetips();">
+				<i class="ace-icon fa fa-times"></i>
+			</button>
+			<div class="title">
+				<i class="fa fa-lightbulb-o"></i>
+				<h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+			</div>
+			<ul>
+				<li>开启状态会占用一定的CPU使用率!</li>
+				<li>关闭状态会占用一定的硬盘空间!</li>
+			</ul>
+		</div>
+		<script type="text/javascript">
+			function showtips(){
+				$("#tips").show();
+				$("#lightbulb").hide();
+				$("#currdoing").hide();
+			}
+			function hidetips(){
+				$("#tips").hide();
+				$("#lightbulb").show();
+				$("#currdoing").show();
+			}
+			setTimeout(function(){$("#tips").hide();$("#lightbulb").show();$("#currdoing").show();}, 10000);
+		</script>
+		<!--主体-->
+		<link rel="stylesheet" href="__PUBLIC__/bootstrap-select/css/bootstrap-select.min.css">
+		<div class="row">
+			<div class="col-xs-12">
+				<form class="form-horizontal ajaxForm2" name="urlsys" method="post" action="{:url('admin/Sys/runlogsys')}">
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 是否定时清日志： </label>
+						<div class="col-sm-9" style="padding-top:5px;">
+							<input name="clear_on" id="clear_on" {if condition="config('log.clear_on')"}checked{/if} value="1" class="ace ace-switch ace-switch-5 btn-flat" type="checkbox" />
+							<span class="lbl"></span>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 清多久前日志：</label>
+						<div class="col-sm-9">
+							<input type="number" name="timebf" id="timebf" value="{:config('log.timebf')}" class="col-xs-5" />
+							<span class="help-inline col-xs-5">
+								<span class="lbl"> 单位秒</span>
+							</span>
+						</div>
+					</div>					
+					<div class="form-group" id="input-rules">
+						<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> 日志记录：</label>
+						<div class="col-sm-9">
+							<select name="log_level[]" class="selectpicker" multiple data-width="fit">
+								<option data-subtext="常规日志">log</option>
+								<option data-subtext="错误">error</option>
+								<option data-subtext="信息">info</option>
+								<option data-subtext="SQL语句">sql</option>
+								<option data-subtext="警告">notice</option>
+								<option data-subtext="警戒性错误">alert</option>
+								<option data-subtext="调试">debug</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="clearfix form-actions">
+						<div class="col-sm-offset-3 col-sm-9">
+							<button class="btn btn-info" type="submit">
+								<i class="ace-icon fa fa-check bigger-110"></i>
+								保存
+							</button>
+
+							&nbsp; &nbsp; &nbsp;
+							<button class="btn" type="reset">
+								<i class="ace-icon fa fa-undo bigger-110"></i>
+								重置
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div><!-- /.page-content -->
+{/block}
+{block name="scripts"}
+<!-- 多选下拉框 -->
+<script src="__PUBLIC__/bootstrap-select/js/bootstrap-select.min.js"></script>
+<script src="__PUBLIC__/bootstrap-select/js/lang/defaults-zh_CN.min.js"></script>
+<script>
+	$('.selectpicker').selectpicker('val',"{$log['level']}".split(','));
+</script>
+{/block}
+
+

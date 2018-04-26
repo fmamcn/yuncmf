@@ -1,0 +1,81 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>{$title|default=$site_seo_title}_{$menu.menu_name}_{$site_name}</title>
+	<meta name="keywords" content="{$site_seo_keywords}" />
+	<meta name="description" content="{$site_seo_description}">
+	{include file="public:head" /}
+</head>
+
+<body>
+	{include file="public:body_top" /}
+	<!--主要内容-->
+	<div class="cont_box">
+		<div class="main" style=" width:1160px;">
+			<div class="maint">
+				<span>当前位置：<a href="{$site_host}">网站首页</a>&nbsp;&nbsp;>&nbsp;&nbsp;<a href="{:url('home/Listn/index',array('id'=>$columnid))}">{$menu.menu_name}</a></span>
+			</div>
+			<div class="mainm">
+				<div class="lm_nr">
+					<h1>{$title}</h1>
+					<div class="lm_nr1">来源：{$source}　发表时间：{$modified|date="Y-m-d H:i:s",###}　点击：{$hits} 次</div>
+					<div class="lm_nr2">{$content}</div>
+					<div class="lm_nr3">
+						<div class="lm_nr3a">
+							<p>上一篇：<a href="{:url('home/Article/index',array('id'=>$prev['n_id']))}">{$prev['title']}</a></p>
+							<p>下一篇：<a href="{:url('home/Article/index',array('id'=>$next['n_id']))}">{$next['title']}</a></p>
+						</div>
+						<div class="lm_nr3b">
+							<p style=" display:block;">
+								<div class="bdsharebuttonbox" style=" width:140px; float:right;">
+									<a href="#" class="bds_more" data-cmd="more"></a>
+									<a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+									<a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+									<a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a>
+									<a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a>
+									<a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+								</div>
+								<script>
+									window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdPic":"","bdStyle":"0","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)]; 
+								</script>
+								<div class="clear"></div>
+							</p>
+							<p style=" padding:10px 0 0 0;">
+								<a href="javascript:printpage();"><img src="{$theme_path}public/images/nr_10.jpg" width="84" height="20"></a>
+								<a onclick="CloseWebPage()"><img src="{$theme_path}public/images/nr_12.jpg" width="84" height="20"></a>
+								<a href="#top"><img src="{$theme_path}public/images/nr_14.jpg" width="84" height="20"></a>
+							</p>
+						</div>
+						<div class="clear"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class=" clear"></div>
+	</div>
+	<script type="text/javascript">
+		function printpage(){
+			window.print();
+		}
+		function CloseWebPage(){
+			if (navigator.userAgent.indexOf("MSIE") > 0) {
+				if (navigator.userAgent.indexOf("MSIE 6.0") > 0) {
+					window.opener = null;
+					window.close();
+				}else{
+					window.open('', '_top');
+					window.top.close();
+				}
+			} else if (navigator.userAgent.indexOf("Firefox") > 0|| navigator.userAgent.indexOf("Chrome") !=-1) {
+				window.location.href = 'about:blank ';
+			} else {
+				window.opener = null;
+				window.open('', '_self');
+				window.close();
+			}
+		}
+	</script>
+	{include file="public:footer" /}
+</body>
+</html>

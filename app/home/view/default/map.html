@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>{$site_seo_title} {$site_name}</title>
+	<meta name="keywords" content="{$site_seo_keywords}" />
+	<meta name="description" content="{$site_seo_description}">
+	{include file="public:head" /}
+</head>
+<body>
+	{include file="public:body_top" /}
+	<!--主要内容-->
+	<div class="cont_box">
+		<div class="main" style=" width:1160px;">
+			<div class="maint">
+				<span>当前位置：<a href="/">网站首页</a>&nbsp;&nbsp;>&nbsp;&nbsp;<a href="{:url('home/Index/map')}">网站地图</a></span>
+			</div>
+			<div class="mainm">
+				<div class="lm_nr">
+					<h1>网站地图</h1>
+					<div class="lm_nr2 lm_nr22">
+						{foreach name="menu" item="va" key="a"}
+							<div class="wzdh_a">
+			 					<div class="wzdh_at">
+			 						{if condition="$va['menu_type'] eq 4"}
+			 							<a href="{:url('home/Singlepage/index',array('id'=>$va['id']))}">{$va['menu_name']}</a>
+			 						{elseif condition="$va['menu_type'] eq 2"}
+			 							<a href="{$va['menu_address']}">{$va['menu_name']}</a>
+									{else/}
+										<a href="{:url('home/Listn/index',array('id'=>$va['id']))}">{$va['menu_name']}</a>
+									{/if}
+			 					</div>
+								{php}$pid=$va['id'];{/php}
+								{YunCMF:album name="menubottomd" pid="$pid" field="id,parentid,menu_name,menu_type,menu_address" order="listorder asc"}
+								{if condition="empty($menubottomd) eq false"}
+									<div class="wzdh_am">
+										<ul>
+											{foreach name="menubottomd" item="vq" key="q"}
+												{if condition="$vq['menu_type'] eq 4"}
+													<li><a href="{:url('home/Singlepage/index',array('id'=>$vq['id']))}">{$vq['menu_name']}</a></li>
+												{elseif condition="$vq['menu_type'] eq 2"}
+													<li><a href="{$vq['menu_address']}">{$vq['menu_name']}</a></li>
+												{else/}
+													<li><a href="{:url('home/Listn/index',array('id'=>$vq['id']))}">{$vq['menu_name']}</a></li>
+												{/if}
+											{/foreach}
+											<div class="clear"></div>
+										</ul>
+									</div>
+								{else/}
+									<div class="wzdh_am">
+										<ul>
+				 						{if condition="$va['menu_type'] eq 4"}
+				 							<li><a href="{:url('home/Singlepage/index',array('id'=>$va['id']))}">{$va['menu_name']}</a></li>
+				 						{elseif condition="$va['menu_type'] eq 2"}
+				 							<li><a href="{$va['menu_address']}">{$va['menu_name']}</a></li>
+										{else/}
+											<li><a href="{:url('home/Listn/index',array('id'=>$va['id']))}">{$va['menu_name']}</a></li>
+										{/if}
+											<div class="clear"></div>
+										</ul>
+									</div>
+								{/if}
+							</div>
+						{/foreach}
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class=" clear"></div>
+	</div>
+	{include file="public:footer" /}
+</body>
+</html>

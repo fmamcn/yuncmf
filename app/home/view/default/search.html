@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>{$menu.menu_seo_title|default=$site_seo_title} {$site_name}</title>
+	<meta name="keywords" content="{$site_seo_keywords}" />
+	<meta name="description" content="{$site_seo_description}">
+	{include file="public:head" /}
+</head>
+
+<body>
+	{include file="public:body_top" /}
+	<!--主要内容-->
+	<div class="cont_box">
+		<div class="side">
+			<div class="sidet">栏目导航</div>
+			<div class="sidem">
+				<ul>
+					{foreach name="menu_sibling" item="vo" key="o"}
+						{if condition="$vo['menu_type'] eq 4"}
+							<li><a href="{:url('home/Singlepage/index',array('id'=>$vo['id']))}">{$vo['menu_name']}</a></li>
+						{else/}
+							<li><a href="{:url('home/Listn/index',array('id'=>$vo['id']))}">{$vo['menu_name']}</a></li>
+						{/if}
+					{/foreach}
+				</ul>
+				<div class="clear"></div>
+			</div>
+		</div>
+		<div class="main">
+			<div class="maint">
+				<span>搜索结果</span>
+			</div>
+			<div class="mainm" id="news_list">
+				{include file="ajax_news_list"/}
+			</div>
+		</div>
+		<div class=" clear"></div>
+	</div>
+	<script type="text/javascript">
+		function ajax_page(page) {        
+			$.ajax({
+				type:"POST",
+				data:{page:page,keyword:'{$keyword}'},            
+				success: function(data,status){
+					$("#news_list").html(data);
+				}
+			});
+		}
+	</script>
+	{include file="public:footer" /}
+</body>
+</html>

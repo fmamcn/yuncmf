@@ -1,0 +1,45 @@
+{foreach name="ad_list" item="v"}
+	<tr>
+		<td class="center" height="28" >{$v.ad_id}</td>
+		<td class="center"><input name="{$v.ad_id}" value="{$v.ad_order}" class="list_order center"/></td>
+		<td class="center"><a href="{$v.ad_url}" target="_blank">{$v.ad_name}</a></td>
+		<td class="center">
+			<img src="{$v.ad_pic|get_imgurl=3}" width="74" height="44" id="img0" title="横屏图片" >
+		</td>
+		<td class="center">
+			<img src="{$v.ad_pic_h|get_imgurl=3}" width="51" height="54" id="img0" title="竖屏图片" >
+		</td>
+		<td class="center">{$v.ad_type_name}</td>
+		<td class="center">{$v.ad_depid}</td>
+		<td class="center">{$v.ad_butt}</td>
+		<td class="center">
+			{if condition='$v.ad_open eq 1'}
+			<a class="red open-btn" href="{:url('admin/Ad/ad_state')}" data-id="{$v.ad_id}" title="已开启">
+				<div id="zt{$v.ad_id}"><button class="btn btn-minier btn-yellow">开启</button></div>
+			</a>
+			{else/}
+			<a class="red open-btn" href="{:url('admin/Ad/ad_state')}" data-id="{$v.ad_id}" title="已禁用">
+				<div id="zt{$v.ad_id}"><button class="btn btn-minier btn-danger">禁用</button></div>
+			</a>
+			{/if}
+		</td>
+		<td class="center">{$v.ad_addtime|date='Y-m-d',###}</td>
+		<td class="center">{$v.ad_hits}</td>
+		<td class="center">{$v.ad_visits}</td>
+		<td class="center">
+			<div class="action-buttons">
+				<a class="green" href="{:url('admin/Ad/ad_edit',array('ad_id'=>$v['ad_id']))}" title="修改">
+					<i class="ace-icon fa fa-pencil-square-o bigger-130"></i>
+				</a>
+				<a class="red confirm-rst-url-btn" href="{:url('admin/Ad/ad_del',array('ad_id'=>$v['ad_id'],'p'=>input('p',1)))}" data-info="你确定要删除吗？" title="删除">
+					<i class="ace-icon fa fa-trash-o bigger-130"></i>
+				</a>
+			</div>
+		</td>
+	</tr>
+{/foreach}
+<tr>
+	<td height="50" align="left"></td>
+	<td height="50" align="center"><button id="btnorder" class="btn btn-white btn-yellow btn-sm">排序</button></td>
+	<td height="50" colspan="11" align="right">{$page}</td>
+</tr>

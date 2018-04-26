@@ -1,0 +1,37 @@
+{foreach name="product" item="v"}
+	<tr>
+		<td class="center">
+			<label class="pos-rel">
+				<input name='n_id[]' id="navid" class="ace" type='checkbox' value='{$v.n_id}'>
+				<span class="lbl"></span>
+			</label>
+		</td>
+		<td class="center">{$v.n_id}</td>
+		<td class="center">{$v.title|subtext=25}</td>
+		<td class="center">{$v['member_nickname']|default=$v['member_username']}</td>
+		<td class="center">{$v.name}</td>
+		<td class="center">
+			{if condition="$v['open'] eq 1"}
+				已审
+			{else/}
+				未审
+			{/if}
+		</td>
+		<td class="center">{$v.time|date='Y-m-d',###}</td>
+		<td class="center">
+			<div class="action-buttons">
+				<a class="green confirm-rst-url-btn" data-info="你确定要还原产品到产品列表吗？" href="{:url('admin/Product/product_back_open',array('n_id'=>$v['n_id'],'p'=>input('p',1)))}" title="还原">
+					<i class="ace-icon fa fa-reply bigger-130"></i>
+				</a>
+				<a class="red confirm-rst-url-btn" data-info="你确定要彻底删除产品吗？" href="{:url('admin/Product/product_back_del',array('n_id'=>$v['n_id'],'p'=>input('p',1)))}" title="删除">
+					<i class="ace-icon fa fa-close bigger-130"></i>
+				</a>
+			</div>
+		</td>
+	</tr>
+{/foreach}
+<tr>
+	<td align="center"><button id="btnsubmit" class="btn btn-white btn-yellow btn-sm">删除</button> </td>
+	<td></td>
+	<td colspan="8" align="right">{$page}</td>
+</tr>
